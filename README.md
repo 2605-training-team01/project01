@@ -12,3 +12,4 @@
    - DDL, DML 실행
    - DQL 실행하여 모델링 검증
 7. Python와 연동
+jkdkdfjaowiefppfgj;atjmo
