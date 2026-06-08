@@ -1,0 +1,13 @@
+--mysql -u root -p
+
+-- ccreate User
+drop user if exists 'kiosk'@'localhost';
+create user 'kiosk'@'localhost' IDENTIFIED BY 'kiosk1234';
+
+-- create Database
+CREATE DATABASE kiosk;
+
+-- grant CRUD
+GRANT ALL PRIVILEGES ON kiosk.* to 'kiosk'@'localhost';
+
+FLUSH PRIVILEGES;
