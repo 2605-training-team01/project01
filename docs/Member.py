@@ -1,0 +1,11 @@
+create table MEMBER(
+   MEMBER_ID  INT           
+   PHONE_NUMBER varchar(11) not null,
+   STAMP_COUNT INT DEFAULT(0),  
+   MEMBER_GRADE varchar(20), 
+   LASTET_PAYMENT_NO varchar(30),       -- 감독
+);
+
+ALTER TABLE MEMBER
+ADD CONSTRAINT MEMBER_PK
+PRIMARY KEY(MEMBER_ID);
