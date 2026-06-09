@@ -1,4 +1,4 @@
-create table  ORDER(
+create table  ORDERS(
     ORDER_CODE INT PRIMARY key,
     M_ID INT NOT NULL,
     MENU_CODE INT NOT NULL,
