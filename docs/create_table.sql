@@ -89,8 +89,8 @@ references OPTION_GROUP(group_id);
 
 
 create table MENU_OPTION_GROUP(
-    group_id int,
-    menu_id int
+    menu_id int,
+    group_id int
 );
 
 alter table MENU_OPTION_GROUP
