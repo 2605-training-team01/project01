@@ -1,6 +1,6 @@
 --mysql -u root -p
 
--- ccreate User
+-- create User
 drop user if exists 'kiosk'@'localhost';
 create user 'kiosk'@'localhost' IDENTIFIED BY 'kiosk1234';
 
