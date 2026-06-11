@@ -1,3 +1,5 @@
+-- mysql -u kiosk -p
+-- use kiosk 
 
 -- =====================================
 -- CATEGORY

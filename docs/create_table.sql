@@ -1,3 +1,6 @@
+-- mysql -u kiosk -p
+-- use kiosk 
+
 -- DROP TABLE
 drop table if EXISTS payment;
 drop table if EXISTS order_option;
