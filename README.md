@@ -16,8 +16,30 @@
 [ 요구사항 (카페 키오스크)]
 <1> 메뉴 관리
 판매되는 메뉴는 카테고리별로 구분하여 관리하기를 원한다.
+```sql
+-- 메뉴와 카테고리를 함께 조회
+SELECT
+    m.menu_id,
+    c.category_name,
+    m.menu_name,
+    m.menu_price
+FROM MENU m
+JOIN CATEGORY c
+    ON m.category_code = c.category_code;
+
+-- 특정 카테고리의 메뉴만 조회
+SELECT
+    c.category_name,
+    m.menu_name,
+    m.menu_price
+FROM MENU m
+JOIN CATEGORY c
+    ON m.category_code = c.category_code
+WHERE c.category_code = '20';
+```
 <2> 메뉴 관리
-각 메뉴의 메뉴명, 판매가격 및 판매여부 정보를 관리하기를 원한다.
+각 메뉴의 메뉴명, 판매가격 정보를 관리하기를 원한다.
+
 <3> 메뉴 옵션 관리
 메뉴별 옵션 그룹(사이즈, 온도 등)과 옵션별 추가금액 정보를 관리하기를 원한다.
 <4> 메뉴 옵션 관리
@@ -36,6 +58,22 @@
 주문에 대한 결제금액, 결제일자, 결제수단 정보를 관리하기를 원한다.
 <11> 결제 관리
 회원별 결제 내역을 조회할 수 있도록 하기를 원한다.
+```sql
+SELECT
+    m.member_id,
+    m.phone_number,
+    o.order_id,
+    p.final_amt,
+    p.pay_type,
+    p.pay_date
+FROM MEMBER m
+JOIN ORDERS o
+    ON m.member_id = o.member_id
+JOIN PAYMENT p
+    ON o.order_id = p.order_id
+WHERE m.phone_number = 1
+ORDER BY p.pay_date DESC;
+```
 <12> 통계 관리
 메뉴별 판매 수량 및 판매 금액을 조회할 수 있도록 하기를 원한다.
 <13> 통계 관리
@@ -89,13 +127,13 @@
    + 데이터베이스 모델링
    + 데이터베이스 DDL 
       + 데이터 베이스, 유저 생성 및 권한 설정
-   + 데이터베이스 테이블 구조 및 데이터 검증
+   + 데이터베이스 DML (요구사항)
 
 + 강유진
    + 데이터베이스 모델링
    + 데이터베이스 DDL (테이블: category, menu, menu_option_group, option_group, option )
    + 데이터베이스 DML (예제 데이터 입력) 
-   + 기능별 DML 플로우
+   + 기능별 DML 플로우(화면 흐름에 따른 기능별)
 
 + 서지윤
    + 데이터베이스 DDL (테이블: orders, order_detail, order_option )
