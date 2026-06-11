@@ -18,35 +18,23 @@ drop table if EXISTS category;
 
 
 create table CATEGORY(
-    category_code int,
+    category_code int AUTO_INCREMENT PRIMARY KEY,
     category_name varchar(30) not null
 );
-
-alter table CATEGORY
-add constraint CATEGORY_PK
-primary key(category_code);
-
 
 -- =====================================
 -- MENU
 -- =====================================
+CREATE TABLE MENU (
+    menu_id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    category_code INT NOT NULL,
+    menu_name VARCHAR(50) NOT NULL,
+    menu_price INT NOT NULL,
 
-create table MENU(
-    menu_id int not null,
-    category_code int not null,
-    menu_name varchar(50) not null,
-    menu_price int not null
+    CONSTRAINT MENU_CATEGORY_FK
+    FOREIGN KEY (category_code)
+    REFERENCES CATEGORY(category_code)
 );
-
-alter table MENU
-add constraint MENU_PK
-primary key(menu_id);
-
-alter table MENU
-add constraint MENU_CATEGORY_FK
-foreign key(category_code)
-references CATEGORY(category_code);
-
 
 -- =====================================
 -- OPTION_GROUP
