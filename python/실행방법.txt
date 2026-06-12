@@ -1,7 +1,13 @@
-1. 터미널 열기
+1. 데이터 베이스 구성 
+    (1) create_database_user.sql
+    (2) create_table.sql 
+    (3) insert_data.sql 
+    (4) select_query.sql 
 
-2. 파이썬 환경 확인(basic OR venv)
+2. 터미널 열기
 
-3. pip install pandas pymysql dotenv streamlit
+3. 파이썬 환경 확인(basic OR venv)
+    (1) 가상 환경 여부 따라
+    (2) pip install pandas pymysql dotenv streamlit
 
 4. streamlit run m.py
