@@ -178,12 +178,13 @@ if st.session_state.selected_menu:
 # ------------------
 # 3. 옵션 화면 생성
 # ------------------
+if st.session_state.selected_menu:
     selected_options = []
     option_total = 0
 
     for group_name in option_df["group_name"].unique():
 
-    st.write(f"### {group_name}")
+     st.write(f"### {group_name}")
 
     group_df = option_df[
         option_df["group_name"] == group_name
@@ -212,18 +213,19 @@ if st.session_state.selected_menu:
 # ------------------
 # 4. 총금액 계산
 # ------------------
-menu_price = menu_info[1]
+if st.session_state.selected_menu:
+    menu_price = menu_info[1]
 
-total_price = menu_price + option_total
+    total_price = menu_price + option_total
 
-st.subheader("금액")
+    st.subheader("금액")
 
-st.write(f"메뉴금액 : {menu_price}원")
-st.write(f"옵션금액 : {option_total}원")
+    st.write(f"메뉴금액 : {menu_price}원")
+    st.write(f"옵션금액 : {option_total}원")
 
-st.success(
-    f"총 금액 : {total_price}원"
-)
+    st.success(
+        f"총 금액 : {total_price}원"
+    )
 
 # ------------------
 # 5. 장바구니 생성
