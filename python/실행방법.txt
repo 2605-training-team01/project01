@@ -1,4 +1,7 @@
-# Terminal
-# 
-# 
-# streamlit run main.py
+1. 터미널 열기
+
+2. 파이썬 환경 확인(basic OR venv)
+
+3. pip install pandas pymysql dotenv streamlit
+
+4. streamlit run m.py
