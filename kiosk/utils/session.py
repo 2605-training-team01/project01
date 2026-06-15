@@ -8,6 +8,7 @@ def init_session():
 
     if "cart" not in st.session_state:
         st.session_state.cart = []
+    
 
     if "order_type" not in st.session_state:
         st.session_state.order_type = ""

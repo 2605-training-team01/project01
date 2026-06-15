@@ -1,16 +1,14 @@
 import streamlit as st
-def render():
-    total=sum(i["price"] for i in st.session_state.cart)
-    st.write(st.session_state.cart)
-    st.write(f"총액:{total}")
-    if st.button("결제하기"):
-        st.session_state.page="payment"; st.rerun()
-import streamlit as st
 
 
 def render():
+
+    if st.button("←"):
+        st.session_state.page = "menu"
+        st.rerun()
 
     st.title("주문 내역")
+
 
     if len(st.session_state.cart) == 0:
 
@@ -100,6 +98,6 @@ def render():
             use_container_width=True
         ):
 
-            st.session_state.page = "payment"
 
+            st.session_state.page = "payment"
             st.rerun()

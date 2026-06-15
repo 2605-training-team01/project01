@@ -4,6 +4,10 @@ from db.database import get_cursor
 
 def render():
 
+    if st.button("←"):
+        st.session_state.page = "summary"
+        st.rerun()
+
     st.title("결제")
 
     payment = st.radio(

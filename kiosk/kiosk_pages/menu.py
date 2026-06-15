@@ -1,11 +1,4 @@
 import streamlit as st
-def render():
-    st.title("메뉴 선택")
-    if st.button("아메리카노 추가"):
-        st.session_state.cart.append({"menu_id":1,"menu_name":"아메리카노","price":3000,"options":[]})
-    if st.button("장바구니 보기"):
-        st.session_state.page="summary"; st.rerun()
-import streamlit as st
 from db.database import get_cursor
 
 
@@ -43,10 +36,9 @@ def render():
 
     if st.sidebar.button("장바구니 보기"):
 
-        st.session_state.page = "summary"
-
         conn.close()
 
+        st.session_state.page = "summary"
         st.rerun()
 
     category = st.sidebar.radio(
@@ -81,10 +73,8 @@ def render():
 
                 st.session_state.selected_menu = menu
 
-                st.session_state.page = "option"
-
                 conn.close()
 
+                st.session_state.page = "option"
                 st.rerun()
-
     conn.close()
