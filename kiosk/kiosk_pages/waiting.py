@@ -13,7 +13,7 @@ def render():
     with col2:
 
         if st.button(
-            "화면을 터치하세요",
+            "화면을 선택하세요",
             use_container_width=True
         ):
             st.session_state.page = "order_type"
