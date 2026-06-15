@@ -51,7 +51,21 @@ def render():
 
         # 이미 회원이면
         if member:
+            st.write("기존 회원 발견")
+            st.write(member)
+
             st.session_state.member_id = member["member_id"]
+            # 스탬프 +1
+            cursor.execute("""
+            UPDATE member
+            SET stamp = stamp + 1
+            WHERE member_id = %s
+            """,(member["member_id"],))
+
+            st.write("UPDATE 실행됨")
+
+            
+            conn.commit()
 
         # 회원 아니면 신규 생성
         else:
@@ -62,13 +76,35 @@ def render():
                 stamp,
                 grade
             )
-            VALUES(%s,0,'BRONZE')
+            VALUES(%s,1,'BRONZE')
             """,(phone,))
 
             conn.commit()
 
             st.session_state.member_id = cursor.lastrowid
 
+
+        # 주문에 회원 연결
+        cursor.execute("""
+        UPDATE orders
+        SET member_id=%s
+        WHERE order_id=%s
+        """,(
+            st.session_state.member_id,
+            st.session_state.order_id
+        ))
+
+        # 결제에 회원 연결
+        cursor.execute("""
+        UPDATE payment
+        SET member_id=%s
+        WHERE order_id=%s
+        """,(
+            st.session_state.member_id,
+            st.session_state.order_id
+        ))
+
+        conn.commit()
         st.session_state.phone = phone
         st.session_state.page = "receipt"
         st.rerun()
