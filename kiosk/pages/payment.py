@@ -1,106 +1,71 @@
 import streamlit as st
 from db.database import get_cursor
 
-
 def render():
+    st.title("💳 결제 및 포인트 적립")
 
-    st.title("결제")
-
+    # 1.결제 수단
     payment = st.radio(
         "결제 수단",
         ["카드", "간편결제", "쿠폰"]
     )
 
+    # 2. 결제 완료
     if st.button("결제 완료"):
-
         conn, cursor = get_cursor()
 
+        
         total_amount = sum(
-            item["price"]
-            for item in st.session_state.cart
+            item["price"] for item in st.session_state.cart
         )
 
-        # 주문 저장
+        # 3. 주문 정보 장부에 적기
         cursor.execute("""
-        INSERT INTO orders(
-            member_id,
-            takeout_type,
-            total_amount
-        )
-        VALUES(%s,%s,%s)
-        """, (
-            None,
-            "Y" if st.session_state.order_type == "포장"
-            else "N",
-            total_amount
-        ))
+        INSERT INTO orders(takeout_type, order_date)
+        VALUES(%s, NOW())
+        """, ("Y" if st.session_state.get("order_type") == "포장" else "N"))
 
-        order_id = cursor.lastrowid
+        order_id = cursor.lastrowid # 방금 생성된 주문번호
 
-        st.session_state.order_id = order_id
-
-        # 주문 상세 저장
+     
         for item in st.session_state.cart:
-
             cursor.execute("""
-            INSERT INTO order_detail(
-                order_id,
-                menu_id,
-                quantity,
-                menu_price,
-                amount
-            )
-            VALUES(%s,%s,%s,%s,%s)
-            """, (
-                order_id,
-                item["menu_id"],
-                1,
-                item["price"],
-                item["price"]
-            ))
+            INSERT INTO orders_detail(order_id, menu_id, quantity, menu_amt)
+            VALUES(%s, %s, %s, %s)
+            """, (order_id, item["menu_id"], 1, item["price"]))
 
-            detail_id = cursor.lastrowid
 
-            # 옵션 저장
-            for op in item["options"]:
+        member_id = st.session_state.get("member_id", None)
 
-                cursor.execute("""
-                INSERT INTO order_option(
-                    detail_id,
-                    option_id,
-                    option_price
-                )
-                VALUES(%s,%s,%s)
-                """, (
-                    detail_id,
-                    op["option_id"],
-                    op["extra_price"]
-                ))
+        if member_id is not None:
+            # 음료 한 잔당 스탬프 1개씩 적립
+            earned_stamps = len(st.session_state.cart) 
 
-        # 결제 저장
+            # 데이터베이스 장부(member 테이블)로 가서 해당 회원의 스탬프 개수를 늘림
+            cursor.execute("""
+            UPDATE member 
+            SET stamp = stamp + %s 
+            WHERE member_id = %s
+            """, (earned_stamps, member_id))
+            
+           
+            st.success(f"🎉 회원님! 스탬프 {earned_stamps}개가 새로 적립되었습니다!")
+        else:
+            
+            st.info("비회원 주문이므로 포인트가 적립되지 않습니다.")
+
+
+        # 4. 결제 완료 및 정보 저장
         cursor.execute("""
-        INSERT INTO payment(
-            member_id,
-            order_id,
-            final_amt,
-            pay_date,
-            pay_type
-        )
-        VALUES(%s,%s,%s,NOW(),%s)
-        """, (
-            None,
-            order_id,
-            total_amount,
-            payment
-        ))
+        INSERT INTO payment(member_id, order_id, final_amt, pay_date, pay_type)
+        VALUES(%s, %s, %s, NOW(), %s)
+        """, (member_id, order_id, total_amount, payment))
 
         conn.commit()
 
         cursor.close()
         conn.close()
 
-        st.session_state.payment = payment
-
-        st.session_state.page = "membership"
-
+   
+        st.session_state.page = "receipt"
         st.rerun()
