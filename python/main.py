@@ -5,7 +5,7 @@ import pymysql
 from dotenv import load_dotenv
 import os
 
-env_path='./.test.env'
+env_path='./test.env'
 load_dotenv(dotenv_path=env_path)
 
 HOST=os.getenv('DB_HOST')
@@ -30,7 +30,7 @@ st.set_page_config(
 )
 
 # -------------------------
-# 초기 상태  ===>  강유진 
+# 초기 상태
 # -------------------------
 if "page" not in st.session_state:
     st.session_state.page = "waiting"
@@ -47,7 +47,7 @@ if "membership" not in st.session_state:
 if "order_id" not in st.session_state:
     st.session_state.order_id = None
 # -------------------------
-# 샘플 메뉴 ===> 강유진 
+# 샘플 메뉴
 # -------------------------
 cursor.execute("""
 SELECT
@@ -66,7 +66,7 @@ categories = list(
     set(row["category_name"] for row in menu_rows)
 )
 # -------------------------
-# 대기 화면  ===> 박소연 
+# 대기 화면
 # -------------------------
 if st.session_state.page == "waiting":
 
@@ -86,7 +86,7 @@ if st.session_state.page == "waiting":
             st.rerun()
 
 # -------------------------
-# 매장 / 포장  ===> 박소연
+# 매장 / 포장
 # -------------------------
 elif st.session_state.page == "order_type":
 
@@ -107,7 +107,7 @@ elif st.session_state.page == "order_type":
             st.rerun()
 
 # -------------------------
-# 메뉴 선택 ===> 서지윤 
+# 메뉴 선택
 # -------------------------
 elif st.session_state.page == "menu":
 
@@ -152,7 +152,7 @@ elif st.session_state.page == "menu":
                 st.rerun()
 
 # -------------------------
-# 옵션 선택 ===> 강유진 
+# 옵션 선택
 # -------------------------
 elif st.session_state.page == "option":
 
@@ -164,34 +164,64 @@ elif st.session_state.page == "option":
 
     cursor.execute("""
     SELECT
+        og.group_name,
         o.option_id,
         o.option_name,
         o.extra_price
     FROM option o
+    JOIN option_group og
+        ON o.group_id = og.group_id
     JOIN menu_option_group mog
-        ON o.group_id = mog.group_id
+        ON og.group_id = mog.group_id
     WHERE mog.menu_id=%s
     """,(menu["menu_id"],))
 
     options = cursor.fetchall()
 
+    grouped_options = {}
+
+    for op in options:
+
+        group_name = op["group_name"]
+
+        if group_name not in grouped_options:
+            grouped_options[group_name] = []
+
+        grouped_options[group_name].append(op)
+
+
     selected_options = []
 
     total_price = menu["menu_price"]
 
-    for op in options:
+    for group_name, option_list in grouped_options.items():
 
-        if st.checkbox(
+        st.subheader(group_name)
+
+        option_names = [
             f"{op['option_name']} (+{op['extra_price']}원)"
-        ):
-            selected_options.append(op)
-            total_price += op["extra_price"]
+            for op in option_list
+        ]
+
+        selected = st.radio(
+            group_name,
+            option_names,
+            key=group_name
+        )
+
+        selected_op = option_list[
+            option_names.index(selected)
+        ]
+
+        selected_options.append(selected_op)
+
+        total_price += selected_op["extra_price"]
 
     st.metric(
         "금액",
         f"{total_price:,}원"
     )
-# #############################여기부터
+
     if st.button("장바구니 담기"):
 
         st.session_state.cart.append({
@@ -204,7 +234,7 @@ elif st.session_state.page == "option":
         st.session_state.page = "menu"
         st.rerun()
 # -------------------------
-# 주문 확인 ===> 박종민 
+# 주문 확인
 # -------------------------
 
 elif st.session_state.page == "summary":
@@ -236,7 +266,7 @@ elif st.session_state.page == "summary":
             st.rerun()
 
 # -------------------------
-# 결제 ===> 박종민
+# 결제
 # -------------------------
 elif st.session_state.page == "payment":
 
@@ -328,7 +358,7 @@ elif st.session_state.page == "payment":
         st.rerun()
     
 # -------------------------
-# 멤버십 ===> 서지윤
+# 멤버십
 # -------------------------
 elif st.session_state.page == "membership":
 
@@ -347,7 +377,7 @@ elif st.session_state.page == "membership":
             st.rerun()
 
 # -------------------------
-# 번호 입력 ===> 이경진
+# 번호 입력
 # -------------------------
 elif st.session_state.page == "phone":
 
@@ -364,7 +394,7 @@ elif st.session_state.page == "phone":
         st.rerun()
 
 # -------------------------
-# 영수증  ===> 이경진
+# 영수증
 # -------------------------
 elif st.session_state.page == "receipt":
 
