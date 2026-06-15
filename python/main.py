@@ -8,7 +8,7 @@ import os
 # DB 연결
 # ------------------
 
-env_path='./test.env'
+env_path='./.env'
 load_dotenv(dotenv_path=env_path)
 
 HOST=os.getenv('DB_HOST')
