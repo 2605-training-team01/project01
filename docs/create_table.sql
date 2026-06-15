@@ -102,7 +102,7 @@ references OPTION_GROUP(group_id);
 
 -- 박종민 start
 create table member(
-	member_id INT,
+	member_id INT AUTO_INCREMENT PRIMARY KEY,
 	phone_number VARCHAR(11) Not Null,
 	stamp INT DEFAULT 0,
 	grade VARCHAR(20)
