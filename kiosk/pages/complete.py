@@ -8,21 +8,15 @@ def show_complete():
     )
 
     st.markdown(
-        """
+        f"""
         ## 주문번호
-        # A-101
+        # A-{st.session_state.order_id}
         """
     )
 
-    # msg = st.empty()
+    st.info("10초 후 초기화")
 
-    for sec in range(5, 0, -1):
-
-        msg.info(
-            f"{sec}초 후 초기화됩니다."
-        )
-
-        time.sleep(1)
+    time.sleep(10)
 
     st.session_state.page = "waiting"
     st.session_state.cart = []
