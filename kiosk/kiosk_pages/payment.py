@@ -2,11 +2,14 @@ import streamlit as st
 from db.database import get_cursor
 
 def render():
-    st.title("💳 결제 및 포인트 적립")
 
     if st.button("←"):
-        st.session_state.page = "summary"
-        st.rerun()
+            st.session_state.page = "summary"
+            st.rerun()
+
+    st.title("💳 결제 및 포인트 적립")
+
+
 
     payment = st.radio(
         "결제 수단",
