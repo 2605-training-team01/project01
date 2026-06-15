@@ -5,7 +5,7 @@ import pymysql
 from dotenv import load_dotenv
 import os
 
-env_path='./test.env'
+env_path='./.env'
 load_dotenv(dotenv_path=env_path)
 
 HOST=os.getenv('DB_HOST')
@@ -426,11 +426,22 @@ elif st.session_state.page == "complete":
         """
     )
 
-    st.info("10초 후 초기화")
+    countdown_text = st.empty()
+    progress = st.progress(0)
 
-    time.sleep(10)
+    for sec in range(10, 0, -1):
+
+        countdown_text.info(
+            f"{sec}초 후 초기 화면으로 이동합니다."
+        )
+
+        progress.progress((11 - sec) * 10)
+
+        time.sleep(1)
 
     st.session_state.page = "waiting"
     st.session_state.cart = []
+    st.session_state.order_type = ""
+    st.session_state.selected_menu = None    
 
     st.rerun()
