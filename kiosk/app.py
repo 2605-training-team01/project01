@@ -2,16 +2,16 @@ import streamlit as st
 
 from utils.session import init_session
 
-from pages.waiting import render as waiting_page
-from pages.order_type import render as order_type_page
-from pages.menu import render as menu_page
-from pages.option import render as option_page
-from pages.summary import render as summary_page
-from pages.payment import render as payment_page
-from pages.membership import render as membership_page
-from pages.phone import render as phone_page
-from pages.receipt import render as receipt_page
-from pages.complete import render as complete_page
+from kiosk_pages.waiting import render as waiting_page
+from kiosk_pages.order_type import render as order_type_page
+from kiosk_pages.menu import render as menu_page
+from kiosk_pages.option import render as option_page
+from kiosk_pages.summary import render as summary_page
+from kiosk_pages.payment import render as payment_page
+from kiosk_pages.membership import render as membership_page
+from kiosk_pages.phone import render as phone_page
+from kiosk_pages.receipt import render as receipt_page
+from kiosk_pages.complete import render as complete_page
 
 st.set_page_config(
     page_title="키오스크",
