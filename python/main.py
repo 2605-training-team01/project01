@@ -109,7 +109,7 @@ for _, row in menu_df.iterrows():
             key=row["menu_id"]
         ):
             st.session_state.selected_menu = row["menu_id"]
-
+# 여기수정
 if st.session_state.selected_menu:
 
     st.success(
@@ -117,6 +117,11 @@ if st.session_state.selected_menu:
         f"{st.session_state.selected_menu}"
     )
 
+quantity = st.number_input(
+    "수량",
+    min_value=1,
+    value=1
+)
 # ------------------
 # 1. 선택된 메뉴의 이름 표시
 # ------------------
@@ -184,7 +189,7 @@ if st.session_state.selected_menu:
 
     for group_name in option_df["group_name"].unique():
 
-     st.write(f"### {group_name}")
+        st.write(f"### {group_name}")
 
     group_df = option_df[
         option_df["group_name"] == group_name
@@ -216,7 +221,8 @@ if st.session_state.selected_menu:
 if st.session_state.selected_menu:
     menu_price = menu_info[1]
 
-    total_price = menu_price + option_total
+    # total_price = menu_price + option_total
+    total_price = (menu_price + option_total) * quantity
 
     st.subheader("금액")
 
@@ -249,6 +255,9 @@ if st.button("장바구니 담기"):
 
             "menu_price":
             menu_price,
+
+            "quantity": 
+            quantity,
 
             "options":
             selected_options,
@@ -287,3 +296,169 @@ for item in st.session_state.cart:
     st.success(
     f"총 주문금액 : {cart_total}원"
 )
+    
+# ------------------
+# 7. 주문내역 확인 화면
+# ------------------
+st.divider()
+st.subheader("주문내역 확인")
+
+cart_total = 0
+
+for item in st.session_state.cart:
+
+    st.write(
+        f"{item['menu_name']} x {item['quantity']}"
+    )
+
+    st.write(
+        f"{item['total']}원"
+    )
+
+    cart_total += item['total']
+
+    st.success(
+    f"결제예정금액 : {cart_total}원"
+)
+    
+# ------------------
+# 7. 주문내역 확인 화면
+# ------------------
+if st.button("결제하기"):
+    st.session_state.page = "payment"
+
+if "page" not in st.session_state:
+    st.session_state.page = "menu"
+
+# ------------------
+# 7. 결제
+# ------------------
+
+if st.session_state.page == "payment":
+
+    st.title("결제")
+# ------------------
+# 7. 포장
+# ------------------
+
+takeout_type = st.radio(
+    "이용방식",
+    ["포장", "매장"]
+)
+
+
+
+
+# ------------------
+# 7. 포장
+# ------------------
+phone_number = st.text_input(
+    "전화번호"
+)
+
+
+
+
+# 조회
+sql = """
+SELECT member_id,
+       stamp,
+       grade
+FROM MEMBER
+WHERE phone_number=%s
+"""
+
+cursor.execute(
+    sql,
+    (phone_number,)
+)
+
+member = cursor.fetchone()
+
+
+if member:
+    st.success(
+        f"{member[2]} 회원"
+    )
+
+# ------------------
+# 7. 결제수단
+# ------------------
+pay_type = st.radio(
+    "결제수단",
+    ["CARD","CASH"]
+)
+
+if st.button("결제 완료"):
+    order_sql = """
+INSERT INTO ORDERS
+(
+ member_id,
+ takeout_type,
+ order_date,
+ total_amount
+)
+VALUES
+(
+ %s,
+ %s,
+ NOW(),
+ %s
+)
+"""
+
+cursor.execute(
+    order_sql,
+    (
+        member[0] if member else None,
+        "Y" if takeout_type=="포장" else "N",
+        cart_total
+    )
+)
+
+conn.commit()
+
+order_id = cursor.lastrowid
+
+# 장바구니 반복
+for item in st.session_state.cart:
+    detail_sql = """
+INSERT INTO ORDER_DETAIL
+(
+ order_id,
+ menu_id,
+ quantity,
+ menu_price,
+ amount
+)
+VALUES
+(
+ %s,
+ %s,
+ %s,
+ %s,
+ %s
+)
+"""
+
+
+payment_sql = """
+INSERT INTO PAYMENT
+(
+ member_id,
+ order_id,
+ final_amt,
+ pay_date,
+ pay_type
+)
+VALUES
+(
+ %s,
+ %s,
+ %s,
+ CURDATE(),
+ %s
+)
+"""
+
+st.success("주문 완료")
