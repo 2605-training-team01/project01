@@ -5,9 +5,9 @@ def get_categories():
     conn = get_connection()
 
     sql = """
-    SELECT category_id, category_name
+    SELECT category_code, category_name
     FROM CATEGORY
-    ORDER BY category_name
+    ORDER BY category_code
     """
 
     result = conn.execute(sql).fetchall()
@@ -17,7 +17,7 @@ def get_categories():
     return result
 
 
-def get_menu_by_category(category_id):
+def get_menu_by_category(category_code):
 
     conn = get_connection()
 
@@ -27,12 +27,12 @@ def get_menu_by_category(category_id):
         menu_name,
         price
     FROM MENU
-    WHERE category_id = ?
+    WHERE category_code = ?
     """
 
     result = conn.execute(
         sql,
-        (category_id,)
+        (category_code,)
     ).fetchall()
 
     conn.close()
