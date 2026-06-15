@@ -14,7 +14,7 @@ def show_complete():
         """
     )
 
-    msg = st.empty()
+    # msg = st.empty()
 
     for sec in range(5, 0, -1):
 

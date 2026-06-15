@@ -44,6 +44,8 @@ if "order_type" not in st.session_state:
 if "membership" not in st.session_state:
     st.session_state.membership = False
 
+if "order_id" not in st.session_state:
+    st.session_state.order_id = None
 # -------------------------
 # 샘플 메뉴
 # -------------------------
@@ -267,6 +269,7 @@ elif st.session_state.page == "payment":
         ))
 
         order_id = cursor.lastrowid
+        st.session_state.order_id = order_id
 
         for item in st.session_state.cart:
 
@@ -387,9 +390,9 @@ elif st.session_state.page == "complete":
     st.success("주문이 완료되었습니다.")
 
     st.markdown(
-        """
+        f"""
         ## 주문번호
-        # A-101
+        # A-{st.session_state.order_id}
         """
     )
 
