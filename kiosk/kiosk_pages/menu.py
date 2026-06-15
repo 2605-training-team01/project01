@@ -6,6 +6,19 @@ def render():
 
     conn, cursor = get_cursor()
 
+    # 카테고리 조회 (category_code 순서 유지)
+    cursor.execute("""
+    SELECT category_name
+    FROM category
+    ORDER BY category_code
+    """)
+
+    categories = [
+        row["category_name"]
+        for row in cursor.fetchall()
+    ]
+
+    # 메뉴 조회
     cursor.execute("""
     SELECT
         c.category_name,
@@ -15,18 +28,10 @@ def render():
     FROM menu m
     JOIN category c
     ON m.category_code = c.category_code
+    ORDER BY c.category_code, m.menu_id
     """)
 
     menu_rows = cursor.fetchall()
-
-    categories = sorted(
-        list(
-            set(
-                row["category_name"]
-                for row in menu_rows
-            )
-        )
-    )
 
     st.title("메뉴 선택")
 
@@ -77,4 +82,5 @@ def render():
 
                 st.session_state.page = "option"
                 st.rerun()
+
     conn.close()
