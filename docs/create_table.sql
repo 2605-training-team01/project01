@@ -168,7 +168,7 @@ CREATE TABLE order_option (
 -- 이경진 start
 CREATE TABLE payment (
 pay_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '결제번호',
-member_id INT NOT NULL COMMENT '회원번호',
+member_id INT NULL COMMENT '회원번호',
 order_id INT NOT NULL COMMENT '주문번호',
 final_amt DECIMAL(15,0) NOT NULL COMMENT '총결제금액',
 pay_date DATE NOT NULL COMMENT '결제일자',
