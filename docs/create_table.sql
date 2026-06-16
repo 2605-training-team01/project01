@@ -168,7 +168,6 @@ CREATE TABLE order_option (
 -- 서지윤 end
 
 
--- 이경진 start
 CREATE TABLE payment (
 pay_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '결제번호',
 member_id INT NULL COMMENT '회원번호',
@@ -188,4 +187,3 @@ CREATE INDEX idx_payment_member
 ON payment(member_id);
 CREATE INDEX idx_payment_order
 ON payment(order_id);
--- 이경진 end
