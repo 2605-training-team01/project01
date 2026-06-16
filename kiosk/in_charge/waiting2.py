@@ -5,8 +5,8 @@ def render():
 
     with open("in_charge/drink.jpg", "rb") as img_file:
         img = base64.b64encode(img_file.read()).decode()
-
-    st.markdown(   
+        
+        st.markdown(   
         f""" 
         <style>
         .stApp {{
@@ -51,8 +51,9 @@ def render():
     <h2 style="
         text-align:center;
         color:white;
-        margin-bottom:20px;
-        margin-left:980px;
+        font-size:24px;
+        margin-bottom:10px;
+        margin-left:700px;
         text-shadow:2px 2px 5px rgba(0,0,0,0.5);
     ">
          👇 주문 방식을 선택해 주세요
@@ -63,7 +64,7 @@ def render():
     space, col1, col2 = st.columns([3, 1, 1])
 
     with col1:
-        if st.button("🏪 매장", use_container_width=True):
+        if st.button("🍽️ 매장", use_container_width=True):
             st.session_state.order_type = "매장"
             st.session_state.page = "menu"
             st.rerun()
