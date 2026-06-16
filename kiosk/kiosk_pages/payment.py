@@ -9,21 +9,70 @@ def render():
 
     st.title("💳 결제 및 포인트 적립")
 
+    member_id = st.session_state.get("member_id")
 
+    coupon_count = 0
+    discount = 0
+    use_coupon = False
+
+    if member_id:
+
+        conn, cursor = get_cursor()
+
+        cursor.execute("""
+        SELECT coupon_count
+        FROM member
+        WHERE member_id=%s
+        """,(member_id,))
+
+        result = cursor.fetchone()
+
+        if result:
+            coupon_count = result["coupon_count"]
+
+        cursor.close()
+        conn.close()
+
+
+    if coupon_count > 0:
+
+        st.write(f"🎟 보유 쿠폰 : {coupon_count}장")
+
+        use_coupon = st.checkbox(
+            "쿠폰 사용 (2000원 할인)"
+        )
+
+        if use_coupon:
+            discount = 2000
+
+
+    total_amount = sum(
+        item["price"]
+        for item in st.session_state.cart
+    )
+
+    # 결제금액 표시
+    final_amount = max(
+        total_amount - discount,
+        0
+    )
+
+    
+    st.write(f"주문금액 : {total_amount:,}원")
+    st.write(f"할인금액 : {discount:,}원")
+    st.write(f"결제금액 : {final_amount:,}원")
 
     payment = st.radio(
         "결제 수단",
-        ["카드", "간편결제", "쿠폰"]
+        ["카드", "간편결제"]
     )
+
 
     if st.button("결제 완료"):
 
         conn, cursor = get_cursor()
 
-        total_amount = sum(
-            item["price"]
-            for item in st.session_state.cart
-        )
+
 
         # 주문 저장
         cursor.execute("""
@@ -34,7 +83,7 @@ def render():
         )
         VALUES(%s,%s,%s)
         """, (
-            None,
+            member_id,
             "Y" if st.session_state.order_type == "포장"
             else "N",
             total_amount
@@ -93,11 +142,20 @@ def render():
         )
         VALUES(%s,%s,%s,NOW(),%s)
         """, (
-            None,
+            member_id,
             order_id,
-            total_amount,
+            final_amount,
             payment
         ))
+
+        # 쿠폰차감
+        if use_coupon and member_id:
+
+            cursor.execute("""
+            UPDATE member
+            SET coupon_count = coupon_count - 1
+            WHERE member_id=%s
+            """,(member_id,))
 
         conn.commit()
 
@@ -105,7 +163,6 @@ def render():
         conn.close()
 
         st.session_state.payment = payment
-
-        st.session_state.page = "membership"
+        st.session_state.page = "receipt"
 
         st.rerun()

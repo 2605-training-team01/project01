@@ -99,5 +99,5 @@ def render():
         ):
 
 
-            st.session_state.page = "payment"
+            st.session_state.page = "membership"
             st.rerun()
