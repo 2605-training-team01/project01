@@ -12,6 +12,10 @@ from kiosk_pages.membership import render as membership_page
 from kiosk_pages.phone import render as phone_page
 from kiosk_pages.receipt import render as receipt_page
 from kiosk_pages.complete import render as complete_page
+from kiosk_pages.admin_login import render as admin_login_page
+from kiosk_pages.admin_dashboard import render as admin_dashboard_page
+from admin.menu_manage import render as menu_manage_page
+from admin.sales import render as sales_page
 
 st.set_page_config(
     page_title="키오스크",
@@ -30,7 +34,11 @@ PAGE_MAP = {
     "membership": membership_page,
     "phone": phone_page,
     "receipt": receipt_page,
-    "complete": complete_page
+    "complete": complete_page,
+    "admin_login": admin_login_page,
+    "admin_dashboard": admin_dashboard_page,
+    "menu_manage": menu_manage_page,
+    "sales": sales_page
 }
 
 PAGE_MAP[st.session_state.page]()

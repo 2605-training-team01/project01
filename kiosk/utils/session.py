@@ -27,3 +27,6 @@ def init_session():
 
     if "payment" not in st.session_state:
         st.session_state.payment = ""
+
+    if "is_admin" not in st.session_state:
+        st.session_state.is_admin = False
