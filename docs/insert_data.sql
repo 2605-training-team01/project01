@@ -80,6 +80,13 @@ insert into MENU_OPTION_GROUP values(4,1);
 insert into MENU_OPTION_GROUP values(4,2);
 
 insert into MENU_OPTION_GROUP values(8,4);
+
+insert into MENU_OPTION_GROUP values(9,2);
+insert into MENU_OPTION_GROUP values(9,3);
+insert into MENU_OPTION_GROUP values(10,1);
+insert into MENU_OPTION_GROUP values(10,2);
+insert into MENU_OPTION_GROUP values(11,1);
+insert into MENU_OPTION_GROUP values(11,2);
 -- =====================================
 -- MEMBER
 -- =====================================
