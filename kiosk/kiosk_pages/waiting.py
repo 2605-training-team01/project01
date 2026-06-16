@@ -100,10 +100,7 @@ def render():
             st.rerun()
 
     st.markdown("<br><br><br>", unsafe_allow_html=True)
-    st.markdown("<br><br><br><br><br>", unsafe_allow_html=True)
-    st.markdown("<br><br><br><br><br>", unsafe_allow_html=True)
-    st.markdown("<br><br><br><br><br>", unsafe_allow_html=True)
-
+    
     col_left, col_right = st.columns([9, 1])
 
     with col_right:
