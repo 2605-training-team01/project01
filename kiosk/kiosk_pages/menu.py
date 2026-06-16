@@ -1,4 +1,4 @@
-# pages/menu_page.py
+# pages/menu.py
 
 import streamlit as st
 from db.database import get_cursor
@@ -54,19 +54,6 @@ def render():
         )
 
     st.title("☕ 메뉴 선택")
-
-    st.sidebar.write(
-        f"장바구니 : {len(st.session_state.cart)}개"
-    )
-
-    if st.sidebar.button(
-        "장바구니 보기"
-    ):
-
-        conn.close()
-
-        st.session_state.page = "summary"
-        st.rerun()
 
     # ---------------------------------
     # 카테고리 버튼 UI (개선사항 5)
@@ -152,4 +139,36 @@ def render():
 
                     st.rerun()
 
+# -----------------------------
+# 하단 장바구니 영역
+# -----------------------------
+
+    st.markdown("<br><br>", unsafe_allow_html=True)
+
+    cart_count = len(st.session_state.cart)
+
+    st.divider()
+
+    col1, col2 = st.columns([2, 1])
+
+    with col1:
+
+        st.markdown(
+            f"""
+            ### 🛒 장바구니 {cart_count}개
+            """
+        )
+        
+    with col2:
+
+        st.write("")
+
+        if st.button(
+            "장바구니 보기",
+            use_container_width=True
+        ):
+
+            st.session_state.page = "summary"
+            st.rerun()
+            
     conn.close()
