@@ -14,7 +14,10 @@ def render():
             use_container_width=True
         ):
 
-            st.session_state.page = "receipt"
+            st.session_state.member_id = None
+
+            st.session_state.page = "payment"
+
 
             st.rerun()
 
