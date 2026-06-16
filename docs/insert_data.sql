@@ -92,13 +92,13 @@ insert into MENU_OPTION_GROUP values(11,2);
 -- =====================================
 
 insert into MEMBER values
-(1,'01012341234',1,'bronze');
+(1,'01012341234',1,0,'bronze');
 
 insert into MEMBER values
-(2,'01012354567',0,'silver');
+(2,'01012354567',0,9,'silver');
 
 insert into MEMBER values
-(3,'01055556666',6,'gold');
+(3,'01055556666',6,1,'gold');
 
 
 -- =====================================
