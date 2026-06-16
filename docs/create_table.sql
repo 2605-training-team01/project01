@@ -39,6 +39,9 @@ CREATE TABLE MENU (
     REFERENCES CATEGORY(category_code)
 );
 
+ALTER TABLE menu
+ADD COLUMN menu_image VARCHAR(500);
+
 -- =====================================
 -- OPTION_GROUP
 -- =====================================
