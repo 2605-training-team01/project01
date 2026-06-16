@@ -1,0 +1,113 @@
+import streamlit as st
+from db.database import get_cursor
+
+def render():
+
+    st.title("메뉴 관리")
+
+    conn, cursor = get_cursor()
+
+    # 카테고리 조회
+    cursor.execute("""
+        SELECT
+            category_code,
+            category_name
+        FROM category
+        ORDER BY category_code
+    """)
+
+    categories = cursor.fetchall()
+
+    category_map = {
+        row["category_name"]: row["category_code"]
+        for row in categories
+    }
+
+    # 메뉴 조회
+    cursor.execute("""
+        SELECT
+            m.menu_id,
+            c.category_name,
+            m.menu_name,
+            m.menu_price
+        FROM menu m
+        JOIN category c
+            ON m.category_code = c.category_code
+        ORDER BY m.menu_id
+    """)
+
+    menus = cursor.fetchall()
+
+    st.subheader("현재 메뉴")
+
+    for menu in menus:
+
+        col1, col2, col3, col4 = st.columns([2, 2, 2, 1])
+
+        with col1:
+            st.write(menu["category_name"])
+
+        with col2:
+            st.write(menu["menu_name"])
+
+        with col3:
+            st.write(f"{menu['menu_price']:,}원")
+
+        with col4:
+            if st.button(
+                "삭제",
+                key=f"del_{menu['menu_id']}"
+            ):
+                cursor.execute("""
+                    DELETE FROM menu
+                    WHERE menu_id = %s
+                """, (menu["menu_id"],))
+
+                conn.commit()
+                st.rerun()
+
+    st.divider()
+
+    st.subheader("메뉴 추가")
+
+    menu_name = st.text_input("메뉴명")
+
+    menu_price = st.number_input(
+        "가격",
+        min_value=0,
+        step=500
+    )
+
+    selected_category = st.selectbox(
+        "카테고리",
+        list(category_map.keys())
+    )
+
+    if st.button("메뉴 추가"):
+
+        cursor.execute("""
+            INSERT INTO menu
+            (
+                category_code,
+                menu_name,
+                menu_price
+            )
+            VALUES (%s, %s, %s)
+        """, (
+            category_map[selected_category],
+            menu_name,
+            menu_price
+        ))
+
+        conn.commit()
+
+        st.success("메뉴가 추가되었습니다.")
+        st.rerun()
+
+    st.divider()
+
+    if st.button("뒤로가기"):
+        st.session_state.page = "admin_dashboard"
+        st.rerun()
+
+    conn.close()

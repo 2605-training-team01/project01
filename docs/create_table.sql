@@ -39,6 +39,9 @@ CREATE TABLE MENU (
     REFERENCES CATEGORY(category_code)
 );
 
+ALTER TABLE menu
+ADD COLUMN menu_image VARCHAR(500);
+
 -- =====================================
 -- OPTION_GROUP
 -- =====================================
@@ -105,12 +108,13 @@ create table member(
 	member_id INT AUTO_INCREMENT PRIMARY KEY,
 	phone_number VARCHAR(11) Not Null,
 	stamp INT DEFAULT 0,
+    coupon_count INT DEFAULT 0,
 	grade VARCHAR(20)
 	);
 
-ALTER TABLE member
-ADD CONSTRAINT member_pk
-PRIMARY KEY(member_id);
+-- ALTER TABLE member
+-- ADD CONSTRAINT member_pk
+-- PRIMARY KEY(member_id);
 
 -- 박종민 end
 
@@ -165,7 +169,6 @@ CREATE TABLE order_option (
 -- 서지윤 end
 
 
--- 이경진 start
 CREATE TABLE payment (
 pay_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '결제번호',
 member_id INT NULL COMMENT '회원번호',
@@ -185,4 +188,3 @@ CREATE INDEX idx_payment_member
 ON payment(member_id);
 CREATE INDEX idx_payment_order
 ON payment(order_id);
--- 이경진 end

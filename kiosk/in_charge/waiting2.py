@@ -1,7 +1,6 @@
 import streamlit as st
 import base64
 
-
 def render():
 
     # 배경 이미지 불러오기
@@ -51,6 +50,7 @@ def render():
 
 space, col1, col2 = st.columns([5, 2, 2])
 
+<<<<<<< HEAD
 with col1:
     if st.button("🏪 매장", use_container_width=True):
         st.session_state.order_type = "매장"
@@ -62,3 +62,22 @@ with col2:
         st.session_state.order_type = "포장"
         st.session_state.page = "menu"
         st.rerun()
+=======
+    with col2:
+        if st.button("🛍️ 포장", use_container_width=True):
+            st.session_state.order_type = "포장"
+            st.session_state.page = "menu"
+            st.rerun()
+
+    st.markdown("<br><br><br>", unsafe_allow_html=True)
+    st.markdown("<br><br><br><br><br>", unsafe_allow_html=True)
+    st.markdown("<br><br><br><br><br>", unsafe_allow_html=True)
+    st.markdown("<br><br><br><br><br>", unsafe_allow_html=True)
+
+    col_left, col_right = st.columns([9, 1])
+
+    with col_right:
+        if st.button("⚙️"):
+            st.session_state.page = "admin_login"
+            st.rerun()
+>>>>>>> 24dc7fec73da29d2e71014055a0f89d50b019f81

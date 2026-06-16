@@ -15,19 +15,19 @@ insert into CATEGORY values(40,'굿즈');
 -- MENU
 -- =====================================
 
-insert into MENU values(1,10,'아메리카노',1500);
-insert into MENU values(2,10,'카페라떼',1500);
-insert into MENU values(3,20,'복숭아아이스티',2000);
-insert into MENU values(4,20,'레몬아이스티',2000);
-insert into MENU values(5,30,'쿠키',3000);
-insert into MENU values(6,30,'케이크',3000);
-insert into MENU values(7,40,'키링',3000);
-insert into MENU values(8,40,'텀블러',10000);
+insert into MENU values(1,10,'아메리카노',1500,'images/americano.png');
+insert into MENU values(2,10,'카페라떼',1500,'images/latte.png');
+insert into MENU values(3,20,'복숭아아이스티',2000,'');
+insert into MENU values(4,20,'레몬아이스티',2000,'');
+insert into MENU values(5,30,'쿠키',3000,'');
+insert into MENU values(6,30,'케이크',3000,'');
+insert into MENU values(7,40,'키링',3000,'');
+insert into MENU values(8,40,'텀블러',10000,'');
 
-insert into MENU values(9,10,'콜드브루',4000);
-insert into MENU values(10,20,'허브티',3000);
+insert into MENU values(9,10,'콜드브루',4000,'images/coldbrew.png');
+insert into MENU values(10,20,'허브티',3000,'');
 
-insert into MENU values(11,20,'밀크티',2500);
+insert into MENU values(11,20,'밀크티',2500,'');
 
 -- =====================================
 -- OPTION_GROUP
@@ -92,13 +92,13 @@ insert into MENU_OPTION_GROUP values(11,2);
 -- =====================================
 
 insert into MEMBER values
-(1,'01012341234',1,'bronze');
+(1,'01012341234',1,0,'bronze');
 
 insert into MEMBER values
-(2,'01012354567',0,'silver');
+(2,'01012354567',0,9,'silver');
 
 insert into MEMBER values
-(3,'01055556666',6,'gold');
+(3,'01055556666',6,1,'gold');
 
 
 -- =====================================
