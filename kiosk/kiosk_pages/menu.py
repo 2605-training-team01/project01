@@ -51,31 +51,26 @@ def render():
         categories
     )
 
-    filtered_menu = [
-        row
-        for row in menu_rows
-        if row["category_name"] == category
-    ]
+    menu_dict = {}
+    for row in menu_rows:
+        menu_dict.setdefault(row["category_name"],[]).append(row)
+    
+    filtered_menu = menu_dict.get(category, [])
 
     for menu in filtered_menu:
 
-        col1, col2, col3 = st.columns([3, 1, 1])
+        with st.container(border=True):
 
-        with col1:
-            st.write(menu["menu_name"])
+            st.subheader(menu["menu_name"])
 
-        with col2:
             st.write(
-                f"{menu['menu_price']:,}원"
+                f" {menu['menu_price']:,}원"
             )
 
-        with col3:
-
             if st.button(
-                "추가",
+                "주문하기",
                 key=f"menu_{menu['menu_id']}"
             ):
-
                 st.session_state.selected_menu = menu
 
                 conn.close()
