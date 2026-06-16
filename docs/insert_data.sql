@@ -29,6 +29,10 @@ insert into MENU values(10,20,'허브티',3000);
 
 insert into MENU values(11,20,'밀크티',2500);
 
+UPDATE menu SET menu_image = 'images/americano.png' WHERE menu_id = 1;
+UPDATE menu SET menu_image = 'images/latte.png' WHERE menu_id = 2;
+UPDATE menu SET menu_image = 'images/coldbrew.png' WHERE menu_id = 9;
+
 -- =====================================
 -- OPTION_GROUP
 -- =====================================
