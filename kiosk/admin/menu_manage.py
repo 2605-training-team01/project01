@@ -14,6 +14,16 @@ def render():
     # ------------------------
     cursor.execute("""
         SELECT
+            group_id,
+            group_name
+        FROM option_group
+        ORDER BY group_id
+    """)
+
+    option_groups = cursor.fetchall()
+
+    cursor.execute("""
+        SELECT
             category_code,
             category_name
         FROM category
@@ -113,6 +123,20 @@ def render():
         type=["png", "jpg", "jpeg"]
     )
 
+    st.subheader("옵션 설정")
+
+    selected_groups = []
+
+    for group in option_groups:
+
+        if st.checkbox(
+            group["group_name"],
+            key=f"group_{group['group_id']}"
+        ):
+            selected_groups.append(
+                group["group_id"]
+            )
+
     if st.button("메뉴 추가"):
 
         image_path = None
@@ -154,6 +178,22 @@ def render():
             menu_price,
             image_path
         ))
+
+        new_menu_id = cursor.lastrowid
+
+        for group_id in selected_groups:
+
+            cursor.execute("""
+                INSERT INTO menu_option_group
+                (
+                    menu_id,
+                    group_id
+                )
+                VALUES (%s, %s)
+            """, (
+                new_menu_id,
+                group_id
+            ))
 
         conn.commit()
 
