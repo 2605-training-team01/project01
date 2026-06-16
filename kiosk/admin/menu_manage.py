@@ -1,5 +1,7 @@
+import os
 import streamlit as st
 from db.database import get_cursor
+
 
 def render():
 
@@ -7,7 +9,9 @@ def render():
 
     conn, cursor = get_cursor()
 
+    # ------------------------
     # 카테고리 조회
+    # ------------------------
     cursor.execute("""
         SELECT
             category_code,
@@ -23,13 +27,16 @@ def render():
         for row in categories
     }
 
+    # ------------------------
     # 메뉴 조회
+    # ------------------------
     cursor.execute("""
         SELECT
             m.menu_id,
             c.category_name,
             m.menu_name,
-            m.menu_price
+            m.menu_price,
+            m.menu_image
         FROM menu m
         JOIN category c
             ON m.category_code = c.category_code
@@ -42,7 +49,9 @@ def render():
 
     for menu in menus:
 
-        col1, col2, col3, col4 = st.columns([2, 2, 2, 1])
+        col1, col2, col3, col4 = st.columns(
+            [2, 2, 2, 1]
+        )
 
         with col1:
             st.write(menu["category_name"])
@@ -51,26 +60,42 @@ def render():
             st.write(menu["menu_name"])
 
         with col3:
-            st.write(f"{menu['menu_price']:,}원")
+            st.write(
+                f"{menu['menu_price']:,}원"
+            )
 
         with col4:
+
             if st.button(
                 "삭제",
                 key=f"del_{menu['menu_id']}"
             ):
+
                 cursor.execute("""
                     DELETE FROM menu
                     WHERE menu_id = %s
-                """, (menu["menu_id"],))
+                """, (
+                    menu["menu_id"],
+                ))
 
                 conn.commit()
+
+                st.success(
+                    "메뉴가 삭제되었습니다."
+                )
+
                 st.rerun()
 
     st.divider()
 
+    # ------------------------
+    # 메뉴 추가
+    # ------------------------
     st.subheader("메뉴 추가")
 
-    menu_name = st.text_input("메뉴명")
+    menu_name = st.text_input(
+        "메뉴명"
+    )
 
     menu_price = st.number_input(
         "가격",
@@ -83,31 +108,69 @@ def render():
         list(category_map.keys())
     )
 
+    uploaded_file = st.file_uploader(
+        "메뉴 이미지",
+        type=["png", "jpg", "jpeg"]
+    )
+
     if st.button("메뉴 추가"):
+
+        image_path = None
+
+        if uploaded_file:
+
+            os.makedirs(
+                "images",
+                exist_ok=True
+            )
+
+            image_path = (
+                f"images/{uploaded_file.name}"
+            )
+
+            with open(
+                image_path,
+                "wb"
+            ) as f:
+
+                f.write(
+                    uploaded_file.getbuffer()
+                )
 
         cursor.execute("""
             INSERT INTO menu
             (
                 category_code,
                 menu_name,
-                menu_price
+                menu_price,
+                menu_image
             )
-            VALUES (%s, %s, %s)
+            VALUES (%s, %s, %s, %s)
         """, (
-            category_map[selected_category],
+            category_map[
+                selected_category
+            ],
             menu_name,
-            menu_price
+            menu_price,
+            image_path
         ))
 
         conn.commit()
 
-        st.success("메뉴가 추가되었습니다.")
+        st.success(
+            "메뉴가 추가되었습니다."
+        )
+
         st.rerun()
 
     st.divider()
 
     if st.button("뒤로가기"):
-        st.session_state.page = "admin_dashboard"
+
+        st.session_state.page = (
+            "admin_dashboard"
+        )
+
         st.rerun()
 
     conn.close()
