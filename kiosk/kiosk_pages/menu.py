@@ -113,7 +113,8 @@ def render():
                 if image_path:
                     st.image(menu["menu_image"], use_container_width=True)
                 else:
-                    st.image("images/no-image.png", use_container_width=True)
+                    # st.image("images/no-image.png", use_container_width=True)
+                    st.image("images/no-image.jpg", use_container_width=True)
                 st.subheader(menu["menu_name"])
 
                 st.write(
