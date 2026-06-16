@@ -108,12 +108,13 @@ create table member(
 	member_id INT AUTO_INCREMENT PRIMARY KEY,
 	phone_number VARCHAR(11) Not Null,
 	stamp INT DEFAULT 0,
+    coupon_count INT DEFAULT 0,
 	grade VARCHAR(20)
 	);
 
-ALTER TABLE member
-ADD CONSTRAINT member_pk
-PRIMARY KEY(member_id);
+-- ALTER TABLE member
+-- ADD CONSTRAINT member_pk
+-- PRIMARY KEY(member_id);
 
 -- 박종민 end
 
