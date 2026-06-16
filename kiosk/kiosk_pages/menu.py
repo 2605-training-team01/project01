@@ -77,7 +77,8 @@ def render():
 
             if st.button(
                 category_name,
-                use_container_width=True,
+                # use_container_width=True,
+                width='stretch',
                 key=f"cat_{idx}"
             ):
 
@@ -117,14 +118,16 @@ def render():
 
                     st.image(
                         image_path,
-                        use_container_width=True
+                        # use_container_width=True
+                        width='stretch'
                     )
 
                 else:
 
                     st.image(
                         "images/no-image.jpg",
-                        use_container_width=True
+                        # use_container_width=True
+                        width='stretch'
                     )
 
                 st.subheader(
@@ -140,7 +143,8 @@ def render():
                 if st.button(
                     "주문하기",
                     key=f"menu_{menu['menu_id']}",
-                    use_container_width=True
+                    # use_container_width=True
+                    width='stretch'
                 ):
 
                     st.session_state.selected_menu = (
@@ -181,7 +185,8 @@ def render():
 
         if st.button(
             "장바구니 보기",
-            use_container_width=True
+            # use_container_width=True
+            width='stretch'
         ):
 
             st.session_state.page = "summary"
