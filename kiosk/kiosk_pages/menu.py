@@ -99,7 +99,7 @@ def render():
     )
 
     # ---------------------------------
-    # 카드형 메뉴 UI (개선사항 3)
+    # 카드형 메뉴 UI
     # ---------------------------------
     menu_cols = st.columns(3)
 
@@ -108,14 +108,28 @@ def render():
         with menu_cols[idx % 3]:
 
             with st.container(border=True):
-                image_path = menu.get("menu_image")
-                
+
+                image_path = menu.get(
+                    "menu_image"
+                )
+
                 if image_path:
-                    st.image(menu["menu_image"], use_container_width=True)
+
+                    st.image(
+                        image_path,
+                        use_container_width=True
+                    )
+
                 else:
-                    # st.image("images/no-image.png", use_container_width=True)
-                    st.image("images/no-image.jpg", use_container_width=True)
-                st.subheader(menu["menu_name"])
+
+                    st.image(
+                        "images/no-image.jpg",
+                        use_container_width=True
+                    )
+
+                st.subheader(
+                    menu["menu_name"]
+                )
 
                 st.write(
                     f"💰 {menu['menu_price']:,}원"
@@ -129,9 +143,6 @@ def render():
                     use_container_width=True
                 ):
 
-                    # ----------------------
-                    # 옵션 페이지 전달용
-                    # ----------------------
                     st.session_state.selected_menu = (
                         dict(menu)
                     )
