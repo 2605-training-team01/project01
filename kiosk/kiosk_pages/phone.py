@@ -62,7 +62,27 @@ def render():
             WHERE member_id = %s
             """,(member["member_id"],))
 
-            st.write("UPDATE 실행됨")
+            # 현재 스탬프 조회
+            cursor.execute("""
+            SELECT stamp
+            FROM member
+            WHERE member_id=%s
+            """,(member["member_id"],))
+
+            stamp = cursor.fetchone()["stamp"]
+
+            # 10개 모이면 쿠폰 생성
+            if stamp >= 10:
+
+                cursor.execute("""
+                UPDATE member
+                SET
+                    stamp = stamp - 10,
+                    coupon_count = coupon_count + 1
+                WHERE member_id=%s
+                """,(member["member_id"],))
+
+                st.success("🎉 쿠폰 1장이 발급되었습니다!")
 
             
             conn.commit()
