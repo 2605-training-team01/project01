@@ -3,20 +3,19 @@ import base64
 
 def render():
 
-    # 배경 이미지 불러오기
     with open("in_charge/drink.jpg", "rb") as img_file:
         img = base64.b64encode(img_file.read()).decode()
 
-    # 배경 이미지 적용
-    st.markdown(
-        f"""
+    st.markdown(   
+        f""" 
         <style>
         .stApp {{
-            background-image: linear-gradient(
-                rgba(0,0,0,0.35),
-                rgba(0,0,0,0.35)
-            ),
-            url("data:image/jpeg;base64,{img}");
+            background-image:
+                linear-gradient(
+                    rgba(0,0,0,0.35),
+                    rgba(0,0,0,0.35)
+                ),
+                url("data:image/jpeg;base64,{img}");
 
             background-size: cover;
             background-position: center;
@@ -45,39 +44,32 @@ def render():
         unsafe_allow_html=True
     )
 
-    # 매장 / 포장 버튼
-    st.markdown("<br><br><br><br><br><br>", unsafe_allow_html=True)
+    st.markdown("<div style='height:550px'></div>", unsafe_allow_html=True)
 
-space, col1, col2 = st.columns([5, 2, 2])
+    st.markdown(
+        """
+    <h2 style="
+        text-align:center;
+        color:white;
+        margin-bottom:20px;
+        margin-left:980px;
+        text-shadow:2px 2px 5px rgba(0,0,0,0.5);
+    ">
+         👇 주문 방식을 선택해 주세요
+    </h2>
+    """,
+    unsafe_allow_html=True
+)
+    space, col1, col2 = st.columns([3, 1, 1])
 
-<<<<<<< HEAD
-with col1:
-    if st.button("🏪 매장", use_container_width=True):
-        st.session_state.order_type = "매장"
-        st.session_state.page = "menu"
-        st.rerun()
-
-with col2:
-    if st.button("🥡 포장", use_container_width=True):
-        st.session_state.order_type = "포장"
-        st.session_state.page = "menu"
-        st.rerun()
-=======
-    with col2:
-        if st.button("🛍️ 포장", use_container_width=True):
-            st.session_state.order_type = "포장"
+    with col1:
+        if st.button("🏪 매장", use_container_width=True):
+            st.session_state.order_type = "매장"
             st.session_state.page = "menu"
             st.rerun()
 
-    st.markdown("<br><br><br>", unsafe_allow_html=True)
-    st.markdown("<br><br><br><br><br>", unsafe_allow_html=True)
-    st.markdown("<br><br><br><br><br>", unsafe_allow_html=True)
-    st.markdown("<br><br><br><br><br>", unsafe_allow_html=True)
-
-    col_left, col_right = st.columns([9, 1])
-
-    with col_right:
-        if st.button("⚙️"):
-            st.session_state.page = "admin_login"
+    with col2:
+        if st.button("🥡 포장", use_container_width=True):
+            st.session_state.order_type = "포장"
+            st.session_state.page = "menu"
             st.rerun()
->>>>>>> 24dc7fec73da29d2e71014055a0f89d50b019f81
