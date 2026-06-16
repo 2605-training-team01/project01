@@ -24,6 +24,10 @@ insert into MENU values(6,30,'케이크',3000);
 insert into MENU values(7,40,'키링',3000);
 insert into MENU values(8,40,'텀블러',10000);
 
+insert into MENU values(9,10,'콜드브루',4000);
+insert into MENU values(10,20,'허브티',3000);
+
+insert into MENU values(11,20,'밀크티',2500);
 
 -- =====================================
 -- OPTION_GROUP
