@@ -87,8 +87,6 @@ def render():
 
                 st.rerun()
 
-    st.divider()
-
     selected_category = (
         st.session_state.selected_category
     )
