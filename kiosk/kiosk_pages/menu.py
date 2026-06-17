@@ -1,8 +1,6 @@
 # pages/menu.py
-
 import streamlit as st
 from db.database import get_cursor
-
 
 def render():
 
@@ -38,6 +36,30 @@ def render():
 
     menu_rows = cursor.fetchall()
 
+    # 최근 7일 간 3개 이상 판매된 메뉴 조회    
+    cursor.execute(
+    """SELECT
+        c.category_name,
+        od.menu_id,
+        SUM(od.quantity) AS total_qty
+    FROM order_detail od
+    JOIN orders om
+        ON od.order_id = om.order_id
+    JOIN menu m
+        ON od.menu_id = m.menu_id
+    JOIN category c
+        ON m.category_code = c.category_code
+    WHERE
+        om.order_date >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+    GROUP BY
+        c.category_name,
+        od.menu_id
+    HAVING
+        SUM(od.quantity) >= 3;
+    """
+    )
+    best_rows = cursor.fetchall()
+    
     # ---------------------------------
     # 메뉴 그룹화 (개선사항 2)
     # ---------------------------------
@@ -54,8 +76,8 @@ def render():
             dict(row)
         )
 
-    st.title("☕ 메뉴 선택")
-
+    st.title("☕ 메뉴 선택", text_alignment="center")
+    
     # ---------------------------------
     # 카테고리 버튼 UI (개선사항 5)
     # ---------------------------------
@@ -77,7 +99,6 @@ def render():
 
             if st.button(
                 category_name,
-                # use_container_width=True,
                 width='stretch',
                 key=f"cat_{idx}"
             ):
@@ -87,8 +108,6 @@ def render():
                 )
 
                 st.rerun()
-
-    st.divider()
 
     selected_category = (
         st.session_state.selected_category
@@ -102,48 +121,74 @@ def render():
     # ---------------------------------
     # 카드형 메뉴 UI
     # ---------------------------------
-    menu_cols = st.columns(3)
-
+    # best_menu_set = set()
+    # for row in best_rows:
+    #     best_menu_set.add(row["menu_id"])
+    best_menu_set = {
+        row["menu_id"] for row in best_rows
+    }
+    
+    menu_cols = st.columns(4)
     for idx, menu in enumerate(filtered_menu):
 
-        with menu_cols[idx % 3]:
+        with menu_cols[idx % 4]:
 
             with st.container(border=True):
+                if menu["menu_id"] in best_menu_set:
+                    st.markdown(
+                        """
+                        <div style="text-align:center;margin-bottom:8px;">
+                            <span style="
+                                background:#ff4b4b;
+                                color:white;
+                                padding:4px 10px;
+                                border-radius:15px;
+                                font-size:13px;
+                                font-weight:bold;
+                            ">
+                                BEST
+                            </span>
+                        </div>
+                        """,
+                        unsafe_allow_html=True
+                    )
 
-                image_path = menu.get(
-                    "menu_image"
-                )
+                image_path = menu.get("menu_image")
 
                 if image_path:
-
                     st.image(
                         image_path,
-                        # use_container_width=True
                         width='stretch'
                     )
-
                 else:
-
                     st.image(
                         "images/no-image.jpg",
-                        # use_container_width=True
                         width='stretch'
                     )
-
-                st.subheader(
-                    menu["menu_name"]
+                    
+                st.markdown(
+                    f"""
+                    <div style="text-align:center;">
+                        <div style="
+                            font-size:22px;
+                            font-weight:bold;
+                            margin-bottom:8px;
+                        ">
+                            {menu['menu_name']}
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
                 )
 
-                st.write(
-                    f"💰 {menu['menu_price']:,}원"
+                st.markdown(
+                    f"<p style='text-align:center;font-size:15px;'>{menu['menu_price']:,}원</p>",
+                    unsafe_allow_html=True
                 )
-
-                st.write("")
 
                 if st.button(
                     "주문하기",
                     key=f"menu_{menu['menu_id']}",
-                    # use_container_width=True
                     width='stretch'
                 ):
 

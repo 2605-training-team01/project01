@@ -1,5 +1,6 @@
 import streamlit as st
 from db.database import get_cursor
+import time
 
 def render():
 
@@ -23,8 +24,8 @@ def render():
 
         # 이미 회원이면
         if member:
-            st.write("기존 회원 발견")
-            st.write(member)
+            st.info(f"📱 {phone} 번호로 적립되었습니다.")
+            time.sleep(1)
 
             st.session_state.member_id = member["member_id"]
             # 스탬프 +1

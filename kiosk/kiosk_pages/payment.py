@@ -163,6 +163,10 @@ def render():
         conn.close()
 
         st.session_state.payment = payment
+        st.session_state.total_amount = total_amount
+        st.session_state.discount = discount
+        st.session_state.final_amount = final_amount
+
         st.session_state.page = "receipt"
 
         st.rerun()
