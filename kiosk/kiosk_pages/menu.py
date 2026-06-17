@@ -1,8 +1,6 @@
 # pages/menu.py
-
 import streamlit as st
 from db.database import get_cursor
-
 
 def render():
 
@@ -38,6 +36,25 @@ def render():
 
     menu_rows = cursor.fetchall()
 
+    # 3잔 이상 판매된 메뉴 조회
+    cursor.execute("""
+    SELECT
+        c.category_name,
+        od.menu_id,
+        SUM(od.quantity) AS total_qty
+    FROM order_detail od
+    JOIN menu m
+        ON od.menu_id = m.menu_id
+    JOIN category c
+        ON m.category_code = c.category_code
+    GROUP BY
+        c.category_name,
+        od.menu_id
+    HAVING SUM(od.quantity) >= 3
+    """)
+
+    best_rows = cursor.fetchall()
+    
     # ---------------------------------
     # 메뉴 그룹화 (개선사항 2)
     # ---------------------------------
@@ -99,13 +116,37 @@ def render():
     # ---------------------------------
     # 카드형 메뉴 UI
     # ---------------------------------
+    best_menu_set = set()
+    for row in best_rows:
+        best_menu_set.add(row["menu_id"])
+    
     menu_cols = st.columns(4)
-
     for idx, menu in enumerate(filtered_menu):
 
         with menu_cols[idx % 4]:
 
             with st.container(border=True):
+                if menu["menu_id"] in best_menu_set:
+                    st.markdown(
+                        """
+                        <div style="
+                            text-align:center;
+                            margin-bottom:8px;
+                        ">
+                            <span style="
+                                background:#ff6b35;
+                                color:white;
+                                padding:5px 12px;
+                                border-radius:20px;
+                                font-size:14px;
+                                font-weight:bold;
+                            ">
+                                ⭐ BEST
+                            </span>
+                        </div>
+                        """,
+                        unsafe_allow_html=True
+                    )
 
                 image_path = menu.get("menu_image")
 
