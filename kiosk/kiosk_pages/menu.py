@@ -77,7 +77,6 @@ def render():
 
             if st.button(
                 category_name,
-                # use_container_width=True,
                 width='stretch',
                 key=f"cat_{idx}"
             ):
@@ -102,48 +101,50 @@ def render():
     # ---------------------------------
     # 카드형 메뉴 UI
     # ---------------------------------
-    menu_cols = st.columns(3)
+    menu_cols = st.columns(4)
 
     for idx, menu in enumerate(filtered_menu):
 
-        with menu_cols[idx % 3]:
+        with menu_cols[idx % 4]:
 
             with st.container(border=True):
 
-                image_path = menu.get(
-                    "menu_image"
-                )
+                image_path = menu.get("menu_image")
 
                 if image_path:
-
                     st.image(
                         image_path,
-                        # use_container_width=True
                         width='stretch'
                     )
-
                 else:
-
                     st.image(
                         "images/no-image.jpg",
-                        # use_container_width=True
                         width='stretch'
                     )
-
-                st.subheader(
-                    menu["menu_name"]
+                    
+                st.markdown(
+                    f"""
+                    <div style="text-align:center;">
+                        <div style="
+                            font-size:22px;
+                            font-weight:bold;
+                            margin-bottom:8px;
+                        ">
+                            {menu['menu_name']}
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
                 )
 
-                st.write(
-                    f"💰 {menu['menu_price']:,}원"
+                st.markdown(
+                    f"<p style='text-align:center;font-size:15px;'>{menu['menu_price']:,}원</p>",
+                    unsafe_allow_html=True
                 )
-
-                st.write("")
 
                 if st.button(
                     "주문하기",
                     key=f"menu_{menu['menu_id']}",
-                    # use_container_width=True
                     width='stretch'
                 ):
 
