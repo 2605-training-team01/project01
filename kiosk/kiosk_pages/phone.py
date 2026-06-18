@@ -4,28 +4,23 @@ import time
 
 def add_digit(num):
     phone_digits = st.session_state.get("phone_digits", "")
-    if len(st.session_state.phone_digits) < 11:
-        st.session_state.phone_digits += str(num)
+    if len(phone_digits) < 11:
+        st.session_state.phone_digits = phone_digits + str(num)
 
 def backspace():
     phone_digits = st.session_state.get("phone_digits", "")
-    st.session_state.phone_digits = st.session_state.phone_digits[:-1]
+    st.session_state.phone_digits = phone_digits[:-1]
 
 def clear():
-    st.session_state.phone_digits = ""
+    st.session_state.phone_digits = "010"
     
 def render():
     if "phone_digits" not in st.session_state:
-        st.session_state.phone_digits = ""
+        st.session_state.phone_digits = "010"
         
     conn, cursor = get_cursor()
     st.title("휴대폰 번호 입력")
 
-    # phone = st.text_input(
-    #     "휴대폰 번호",
-    #     placeholder="010-1234-5678"
-    # )
-    # digits = st.session_state.phone_digits
     digits = st.session_state.get("phone_digits", "")
 
     if len(digits) > 7:
@@ -52,38 +47,33 @@ def render():
     )
 
     ## 키패드
-    row1 = st.columns(3)
-    with row1[0]:
-        st.button("1", use_container_width=True, on_click=add_digit, args=(1,))
-    with row1[1]:
-        st.button("2", use_container_width=True, on_click=add_digit, args=(2,))
-    with row1[2]:
-        st.button("3", use_container_width=True, on_click=add_digit, args=(3,))
+    buttons = [
+    ["1","2","3"],
+    ["4","5","6"],
+    ["7","8","9"],
+    ["←","0","C"]
+    ]
 
-    row2 = st.columns(3)
-    with row2[0]:
-        st.button("4", use_container_width=True, on_click=add_digit, args=(4,))
-    with row2[1]:
-        st.button("5", use_container_width=True, on_click=add_digit, args=(5,))
-    with row2[2]:
-        st.button("6", use_container_width=True, on_click=add_digit, args=(6,))
+    for row in buttons:
+        cols = st.columns(3)
+        for i, value in enumerate(row):
+            with cols[i]:
+                if value == "←":
+                    st.button(value,
+                            use_container_width=True,
+                            on_click=backspace)
 
-    row3 = st.columns(3)
-    with row3[0]:
-        st.button("7", use_container_width=True, on_click=add_digit, args=(7,))
-    with row3[1]:
-        st.button("8", use_container_width=True, on_click=add_digit, args=(8,))
-    with row3[2]:
-        st.button("9", use_container_width=True, on_click=add_digit, args=(9,))
+                elif value == "C":
+                    st.button(value,
+                            use_container_width=True,
+                            on_click=clear)
 
-    row4 = st.columns(3)
-    with row4[0]:
-        st.button("←", use_container_width=True, on_click=backspace)
-    with row4[1]:
-        st.button("0", use_container_width=True, on_click=add_digit, args=(0,))
-    with row4[2]:
-        st.button("C", use_container_width=True, on_click=clear)    
-    
+                else:
+                    st.button(value,
+                            use_container_width=True,
+                            on_click=add_digit,
+                            args=(value,))
+
     if st.button("적립"):
 
         cursor.execute("""
@@ -128,16 +118,18 @@ def render():
                 """,(member["member_id"],))
 
                 st.success("🎉 쿠폰 1장이 발급되었습니다!")
+                time.sleep(1)
 
             
-            conn.commit()
-            st.session_state.phone_digits = ""
+            st.session_state.phone_digits = "010"
             st.session_state.phone = phone
             st.session_state.page = "payment"
-            st.rerun()
+
         # 회원 아니면 신규 생성
         else:
-
+            st.info(f"신규 📱 {phone} 번호로 적립되었습니다.")
+            time.sleep(1)
+            
             cursor.execute("""
             INSERT INTO member(
                 phone_number,
@@ -146,8 +138,6 @@ def render():
             )
             VALUES(%s,1,'BRONZE')
             """,(phone,))
-
-            conn.commit()
 
             st.session_state.member_id = cursor.lastrowid
 
@@ -175,7 +165,7 @@ def render():
         conn.commit()
         cursor.close()
         conn.close()
-        st.session_state.phone_digits = ""
+        st.session_state.phone_digits = "010"
         st.session_state.phone = phone
         st.session_state.page = "payment"
         st.rerun()

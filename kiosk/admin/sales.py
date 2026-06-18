@@ -35,7 +35,7 @@ def render():
 
         st.dataframe(
             df,
-            use_container_width=True
+            width='stretch'
         )
 
     with tab_month:
@@ -60,7 +60,7 @@ def render():
 
         st.dataframe(
             df,
-            use_container_width=True
+            width='stretch'
         )
 
     with tab_year:
@@ -85,7 +85,7 @@ def render():
 
         st.dataframe(
             df,
-            use_container_width=True
+            width='stretch'
         )
 
     with tab_search:
@@ -157,7 +157,7 @@ def render():
 
             st.dataframe(
                 category_sales,
-                use_container_width=True
+                width='stretch'
             )
             
             # category_sales = cursor.fetchall()
@@ -193,7 +193,7 @@ def render():
             
             st.dataframe(
                 menu_sales,
-                use_container_width=True
+                width='stretch'
             )
 
 
