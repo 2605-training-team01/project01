@@ -1,4 +1,7 @@
 import streamlit as st
+from db.database import get_cursor
+from utils.cookies import cookie_manager
+
 
 def render():
 
@@ -10,7 +13,7 @@ def render():
 
     st.subheader("관리 메뉴")
 
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
 
     with col1:
         if st.button("메뉴 관리"):
@@ -18,6 +21,11 @@ def render():
             st.rerun()
 
     with col2:
+        if st.button("옵션 관리"):
+            st.session_state.page = "option_manage"
+            st.rerun()
+
+    with col3:
         if st.button("매출 통계"):
             st.session_state.page = "sales"
             st.rerun()
@@ -25,6 +33,25 @@ def render():
     st.divider()
 
     if st.button("로그아웃"):
+
+        token = cookie_manager.get("token")
+
+        if token:
+
+            conn, cursor = get_cursor()
+
+            cursor.execute("""
+                UPDATE admin
+                SET login_token = NULL
+                WHERE login_token = %s
+            """, (token,))
+
+            conn.commit()
+            conn.close()
+
+        cookie_manager.delete("token")
+        
         st.session_state.is_admin = False
         st.session_state.page = "waiting"
+
         st.rerun()

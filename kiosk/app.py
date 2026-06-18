@@ -1,6 +1,8 @@
+from db.database import get_cursor
 import streamlit as st
-
 from utils.session import init_session
+from utils.cookies import cookie_manager
+
 
 from in_charge.waiting2 import render as waiting_page
 # from kiosk_pages.waiting import render as waiting_page
@@ -15,8 +17,10 @@ from kiosk_pages.receipt import render as receipt_page
 from kiosk_pages.complete import render as complete_page
 from kiosk_pages.admin_login import render as admin_login_page
 from kiosk_pages.admin_dashboard import render as admin_dashboard_page
+
 from admin.menu_manage import render as menu_manage_page
 from admin.sales import render as sales_page
+from admin.option_manage import render as option_manage_page
 
 st.set_page_config(
     page_title="키오스크",
@@ -24,6 +28,42 @@ st.set_page_config(
 )
 
 init_session()
+
+# --------------------------
+# 관리자 자동 로그인
+# --------------------------
+
+try:
+
+    token = cookie_manager.get("token")
+
+    if token and not st.session_state.is_admin:
+
+        conn, cursor = get_cursor()
+
+        cursor.execute("""
+            SELECT *
+            FROM admin
+            WHERE login_token = %s
+        """, (token,))
+
+        admin = cursor.fetchone()
+
+        conn.close()
+
+        if admin:
+
+            st.session_state.is_admin = True
+
+            if st.session_state.page == "waiting":
+                st.session_state.page = "admin_dashboard"
+
+except Exception as e:
+    print("Cookie Error:", e)
+
+# --------------------------
+# 페이지 매핑
+# --------------------------
 
 PAGE_MAP = {
     "waiting": waiting_page,
@@ -39,7 +79,17 @@ PAGE_MAP = {
     "admin_login": admin_login_page,
     "admin_dashboard": admin_dashboard_page,
     "menu_manage": menu_manage_page,
-    "sales": sales_page
+    "sales": sales_page,
+    "option_manage": option_manage_page,
 }
 
-PAGE_MAP[st.session_state.page]()
+# --------------------------
+# 페이지 실행
+# --------------------------
+
+current_page = st.session_state.page
+
+if current_page in PAGE_MAP:
+    PAGE_MAP[current_page]()
+else:
+    st.error(f"존재하지 않는 페이지: {current_page}")

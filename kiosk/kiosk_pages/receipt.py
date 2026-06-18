@@ -55,8 +55,6 @@ def render():
             total_amount
         )
 
-        st.write("discount =", st.session_state.get("discount"))
-        st.write("final_amount =", st.session_state.get("final_amount"))
 
 
         # 영수증 미리보기
