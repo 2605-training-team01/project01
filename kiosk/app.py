@@ -20,6 +20,7 @@ from kiosk_pages.admin_dashboard import render as admin_dashboard_page
 from admin.menu_manage import render as menu_manage_page
 from admin.sales import render as sales_page
 from admin.option_manage import render as option_manage_page
+from admin.change_password import render as change_password
 
 st.set_page_config(
     page_title="키오스크",
@@ -77,6 +78,7 @@ PAGE_MAP = {
     "complete": complete_page,
     "admin_login": admin_login_page,
     "admin_dashboard": admin_dashboard_page,
+    "change_password" : change_password,
     "menu_manage": menu_manage_page,
     "sales": sales_page,
     "option_manage": option_manage_page,

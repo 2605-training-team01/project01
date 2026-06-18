@@ -11,6 +11,13 @@ def render():
 
     st.title("관리자 페이지")
 
+    col1, col2 = st.columns([8,2])
+
+    with col2:
+        if st.button("🔑 비밀번호 변경"):
+            st.session_state.page = "change_password"
+            st.rerun()
+
     st.subheader("관리 메뉴")
 
     col1, col2, col3 = st.columns(3)
