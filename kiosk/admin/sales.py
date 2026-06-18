@@ -225,8 +225,8 @@ def render():
 
         st.divider()
 
-        if st.button("뒤로가기"):
-            st.session_state.page = "admin_dashboard"
-            st.rerun()
+    if st.button("뒤로가기"):
+        st.session_state.page = "admin_dashboard"
+        st.rerun()
 
     conn.close()
