@@ -1,5 +1,7 @@
+import uuid
 import streamlit as st
 from db.database import get_cursor
+from utils.cookies import cookie_manager
 
 
 def render():
@@ -35,15 +37,36 @@ def render():
 
             admin = cursor.fetchone()
 
-            conn.close()
-
             if admin:
+
+                token = str(uuid.uuid4())
+
+                cursor.execute("""
+                    UPDATE admin
+                    SET login_token = %s
+                    WHERE admin_id = %s
+                """, (
+                    token,
+                    admin["admin_id"]
+                ))
+
+                conn.commit()
+
+                cookie_manager.set(
+                    "token",
+                    token
+                )
+
+                conn.close()
 
                 st.session_state.is_admin = True
                 st.session_state.page = "admin_dashboard"
+
                 st.rerun()
 
             else:
+
+                conn.close()
 
                 st.error(
                     "아이디 또는 비밀번호가 틀렸습니다."

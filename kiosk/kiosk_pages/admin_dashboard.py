@@ -1,4 +1,7 @@
 import streamlit as st
+from db.database import get_cursor
+from utils.cookies import cookie_manager
+
 
 def render():
 
@@ -25,6 +28,25 @@ def render():
     st.divider()
 
     if st.button("로그아웃"):
+
+        token = cookie_manager.get("token")
+
+        if token:
+
+            conn, cursor = get_cursor()
+
+            cursor.execute("""
+                UPDATE admin
+                SET login_token = NULL
+                WHERE login_token = %s
+            """, (token,))
+
+            conn.commit()
+            conn.close()
+
+        cookie_manager.delete("token")
+        
         st.session_state.is_admin = False
         st.session_state.page = "waiting"
+
         st.rerun()
