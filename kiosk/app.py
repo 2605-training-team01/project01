@@ -2,8 +2,8 @@ import streamlit as st
 
 from utils.session import init_session
 
-# from in_charge.waiting2 import render as waiting_page
-from kiosk_pages.waiting import render as waiting_page
+from in_charge.waiting2 import render as waiting_page
+# from kiosk_pages.waiting import render as waiting_page
 from kiosk_pages.order_type import render as order_type_page
 from kiosk_pages.menu import render as menu_page
 from kiosk_pages.option import render as option_page

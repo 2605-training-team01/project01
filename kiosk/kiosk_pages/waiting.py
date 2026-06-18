@@ -4,7 +4,7 @@ import base64
 def render():
 
     # 배경 이미지 불러오기
-    with open("in_charge/coffee.jpg", "rb") as img_file:
+    with open("in_charge/drink.jpg", "rb") as img_file:
         img = base64.b64encode(img_file.read()).decode()
 
     # 배경 이미지 적용
@@ -57,7 +57,7 @@ def render():
             color:white;
             font-size:100px;
             font-weight:bold;
-            margin-top:250px;
+            margin-top:100px;
             margin-bottom:15px;
             text-shadow:2px 2px 8px rgba(0,0,0,0.7);
         ">

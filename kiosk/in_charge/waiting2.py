@@ -5,12 +5,6 @@ def render():
 
     with open("in_charge/drink.jpg", "rb") as img_file:
         img = base64.b64encode(img_file.read()).decode()
-
-    with open("in_charge/store.png", "rb") as store_file:
-        store_img = base64.b64encode(store_file.read()).decode()
-
-    with open("in_charge/takeout.png", "rb") as takeout_file:
-        takeout_img = base64.b64encode(takeout_file.read()).decode()    
         
     st.markdown(   
         f""" 
