@@ -13,6 +13,15 @@ drop table if EXISTS option_group;
 drop table if EXISTS menu;
 drop table if EXISTS category;
 
+drop table if EXISTS admin;
+
+CREATE TABLE admin (
+admin_id INT AUTO_INCREMENT PRIMARY KEY,
+admin_name VARCHAR(50) NOT NULL,
+admin_pw VARCHAR(100) NOT NULL,
+login_token VARCHAR(100)
+);
+
 -- 강유진 start
 
 -- =====================================
@@ -47,7 +56,7 @@ ADD COLUMN menu_image VARCHAR(500);
 -- =====================================
 
 create table OPTION_GROUP(
-    group_id int,
+    group_id int AUTO_INCREMENT,
     group_name varchar(30) not null
 );
 
@@ -61,7 +70,7 @@ primary key(group_id);
 -- =====================================
 
 create table OPTION(
-    option_id int,
+    option_id int AUTO_INCREMENT,
     group_id int,
     option_name varchar(50) not null,
     extra_price int default 0

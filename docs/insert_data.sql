@@ -1,6 +1,11 @@
 -- mysql -u kiosk -p
 -- use kiosk 
 
+-- ================
+-- ADMIN
+-- ================
+INSERT INTO admin(admin_name,admin_pw) VALUES ('admin','1234');
+
 -- =====================================
 -- CATEGORY
 -- =====================================
