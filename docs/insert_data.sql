@@ -1,205 +1,269 @@
--- mysql -u kiosk -p
--- use kiosk 
+/*M!999999\- enable the sandbox mode */ 
+-- MariaDB dump 10.19-12.2.2-MariaDB, for Win64 (AMD64)
+--
+-- Host: localhost    Database: kiosk
+-- ------------------------------------------------------
+-- Server version	12.2.2-MariaDB
 
--- ================
--- ADMIN
--- ================
-INSERT INTO admin(admin_name,admin_pw) VALUES ('admin','1234');
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*M!100616 SET @OLD_NOTE_VERBOSITY=@@NOTE_VERBOSITY, NOTE_VERBOSITY=0 */;
 
--- =====================================
--- CATEGORY
--- =====================================
+--
+-- Dumping data for table `admin`
+--
 
-insert into CATEGORY values(10,'커피');
-insert into CATEGORY values(20,'티');
-insert into CATEGORY values(30,'디저트');
-insert into CATEGORY values(40,'굿즈');
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
+LOCK TABLES `admin` WRITE;
+/*!40000 ALTER TABLE `admin` DISABLE KEYS */;
+INSERT INTO `admin` VALUES
+(1,'admin','1234',NULL);
+/*!40000 ALTER TABLE `admin` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
+--
+-- Dumping data for table `category`
+--
 
--- =====================================
--- MENU
--- =====================================
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
+LOCK TABLES `category` WRITE;
+/*!40000 ALTER TABLE `category` DISABLE KEYS */;
+INSERT INTO `category` VALUES
+(10,'커피'),
+(20,'티'),
+(30,'디저트'),
+(40,'굿즈');
+/*!40000 ALTER TABLE `category` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
-insert into MENU values(1,10,'아메리카노',1500,'images/americano.png');
-insert into MENU values(2,10,'카페라떼',1500,'images/latte.png');
-insert into MENU values(3,20,'복숭아아이스티',2000,'');
-insert into MENU values(4,20,'레몬아이스티',2000,'');
-insert into MENU values(5,30,'쿠키',3000,'');
-insert into MENU values(6,30,'케이크',3000,'');
-insert into MENU values(7,40,'키링',3000,'');
-insert into MENU values(8,40,'텀블러',10000,'');
+--
+-- Dumping data for table `member`
+--
 
-insert into MENU values(9,10,'콜드브루',4000,'images/coldbrew.png');
-insert into MENU values(10,20,'허브티',3000,'');
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
+LOCK TABLES `member` WRITE;
+/*!40000 ALTER TABLE `member` DISABLE KEYS */;
+INSERT INTO `member` VALUES
+(1,'01012341234',1,0,'bronze'),
+(2,'01012354567',1,9,'silver'),
+(3,'01055556666',7,0,'gold');
+/*!40000 ALTER TABLE `member` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
-insert into MENU values(11,20,'밀크티',2500,'');
+--
+-- Dumping data for table `menu`
+--
 
--- =====================================
--- OPTION_GROUP
--- =====================================
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
+LOCK TABLES `menu` WRITE;
+/*!40000 ALTER TABLE `menu` DISABLE KEYS */;
+INSERT INTO `menu` VALUES
+(1,10,'아메리카노',1500,'images/americano.png'),
+(2,10,'카페라떼',1500,'images/latte.png'),
+(3,20,'복숭아아이스티',2000,''),
+(4,20,'레몬아이스티',2000,''),
+(5,30,'쿠키',3000,''),
+(6,30,'케이크',3000,''),
+(7,40,'키링',3000,''),
+(8,40,'텀블러',10000,''),
+(9,10,'콜드브루',4000,'images/coldbrew.png'),
+(10,20,'허브티',3000,''),
+(11,20,'밀크티',2500,''),
+(12,40,'멍뭉이',0,'images/dog.jpg'),
+(13,10,'에스프레소',3000,NULL),
+(14,10,'멍멍이들',0,'images/puppies.jpg');
+/*!40000 ALTER TABLE `menu` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
-insert into OPTION_GROUP values(1,'temperature');
-insert into OPTION_GROUP values(2,'size');
-insert into OPTION_GROUP values(3,'shot');
-insert into OPTION_GROUP values(4,'color');
-insert into OPTION_GROUP values(5,'cream');
+--
+-- Dumping data for table `menu_option_group`
+--
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
+LOCK TABLES `menu_option_group` WRITE;
+/*!40000 ALTER TABLE `menu_option_group` DISABLE KEYS */;
+INSERT INTO `menu_option_group` VALUES
+(1,1),
+(2,1),
+(3,1),
+(4,1),
+(10,1),
+(11,1),
+(1,2),
+(2,2),
+(3,2),
+(4,2),
+(9,2),
+(10,2),
+(11,2),
+(13,2),
+(1,3),
+(2,3),
+(9,3),
+(13,3),
+(8,4),
+(2,5);
+/*!40000 ALTER TABLE `menu_option_group` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
--- =====================================
--- OPTION
--- =====================================
+--
+-- Dumping data for table `option`
+--
 
-insert into OPTION values(1,1,'차가운',500);
-insert into OPTION values(2,1,'뜨거운',0);
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
+LOCK TABLES `option` WRITE;
+/*!40000 ALTER TABLE `option` DISABLE KEYS */;
+INSERT INTO `option` VALUES
+(1,1,'차가운',500),
+(2,1,'뜨거운',0),
+(3,2,'중간사이즈',0),
+(4,2,'큰사이즈',500),
+(5,3,'샷_01',500),
+(6,3,'샷_02',1000),
+(7,3,'샷_없음',0),
+(8,4,'하얀색',0),
+(9,4,'검정색',0),
+(10,5,'휘핑크림',500);
+/*!40000 ALTER TABLE `option` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
-insert into OPTION values(3,2,'중간사이즈',0);
-insert into OPTION values(4,2,'큰사이즈',500);
+--
+-- Dumping data for table `option_group`
+--
 
-insert into OPTION values(5,3,'샷_01',500);
-insert into OPTION values(6,3,'샷_02',1000);
-insert into OPTION values(7,3,'샷_없음',0);
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
+LOCK TABLES `option_group` WRITE;
+/*!40000 ALTER TABLE `option_group` DISABLE KEYS */;
+INSERT INTO `option_group` VALUES
+(1,'temperature'),
+(2,'size'),
+(3,'shot'),
+(4,'color'),
+(5,'cream');
+/*!40000 ALTER TABLE `option_group` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
-insert into OPTION values(8,4,'하얀색',0);
-insert into OPTION values(9,4,'검정색',0);
+--
+-- Dumping data for table `order_detail`
+--
 
-insert into OPTION values(10,5,'휘핑크림',500);
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
+LOCK TABLES `order_detail` WRITE;
+/*!40000 ALTER TABLE `order_detail` DISABLE KEYS */;
+INSERT INTO `order_detail` VALUES
+(1,1001,1,1,1500.00,1500.00),
+(2,1001,3,2,2000.00,4000.00),
+(3,1001,2,1,1500.00,1500.00),
+(4,1002,1,1,1500.00,1500.00),
+(5,1002,3,2,2000.00,4000.00),
+(6,1003,5,1,3000.00,3000.00),
+(7,1004,12,1,0.00,0.00),
+(8,1004,12,1,0.00,0.00),
+(9,1005,12,1,0.00,0.00),
+(10,1006,1,1,2500.00,2500.00),
+(11,1006,1,1,2500.00,2500.00),
+(12,1006,1,1,2500.00,2500.00),
+(13,1006,1,1,2500.00,2500.00),
+(14,1006,1,1,2500.00,2500.00);
+/*!40000 ALTER TABLE `order_detail` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
+--
+-- Dumping data for table `order_option`
+--
 
--- =====================================
--- MENU_OPTION_GROUP
--- =====================================
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
+LOCK TABLES `order_option` WRITE;
+/*!40000 ALTER TABLE `order_option` DISABLE KEYS */;
+INSERT INTO `order_option` VALUES
+(1,1,500.00),
+(1,4,500.00),
+(2,1,500.00),
+(2,4,500.00),
+(3,2,0.00),
+(3,3,0.00),
+(4,2,0.00),
+(4,3,0.00),
+(10,1,500.00),
+(10,3,0.00),
+(10,5,500.00),
+(11,1,500.00),
+(11,3,0.00),
+(11,5,500.00),
+(12,1,500.00),
+(12,3,0.00),
+(12,5,500.00),
+(13,1,500.00),
+(13,3,0.00),
+(13,5,500.00),
+(14,1,500.00),
+(14,3,0.00),
+(14,5,500.00);
+/*!40000 ALTER TABLE `order_option` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
-insert into MENU_OPTION_GROUP values(1,1);
-insert into MENU_OPTION_GROUP values(1,2);
-insert into MENU_OPTION_GROUP values(1,3);
+--
+-- Dumping data for table `orders`
+--
 
-insert into MENU_OPTION_GROUP values(2,1);
-insert into MENU_OPTION_GROUP values(2,2);
-insert into MENU_OPTION_GROUP values(2,3);
-insert into MENU_OPTION_GROUP values(2,5);
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
+LOCK TABLES `orders` WRITE;
+/*!40000 ALTER TABLE `orders` DISABLE KEYS */;
+INSERT INTO `orders` VALUES
+(1001,1,'Y','2026-06-08 10:10:00',9000.00),
+(1002,2,'Y','2026-06-08 13:00:00',5500.00),
+(1003,NULL,'Y','2026-06-10 15:30:00',3000.00),
+(1004,2,'Y','2026-06-18 14:19:03',0.00),
+(1005,3,'Y','2026-06-18 14:20:30',0.00),
+(1006,NULL,'Y','2026-06-18 14:21:18',12500.00);
+/*!40000 ALTER TABLE `orders` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
-insert into MENU_OPTION_GROUP values(3,1);
-insert into MENU_OPTION_GROUP values(3,2);
+--
+-- Dumping data for table `payment`
+--
 
-insert into MENU_OPTION_GROUP values(4,1);
-insert into MENU_OPTION_GROUP values(4,2);
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
+LOCK TABLES `payment` WRITE;
+/*!40000 ALTER TABLE `payment` DISABLE KEYS */;
+/*!40000 ALTER TABLE `payment` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
-insert into MENU_OPTION_GROUP values(8,4);
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
-insert into MENU_OPTION_GROUP values(9,2);
-insert into MENU_OPTION_GROUP values(9,3);
-insert into MENU_OPTION_GROUP values(10,1);
-insert into MENU_OPTION_GROUP values(10,2);
-insert into MENU_OPTION_GROUP values(11,1);
-insert into MENU_OPTION_GROUP values(11,2);
--- =====================================
--- MEMBER
--- =====================================
-
-insert into MEMBER values
-(1,'01012341234',1,0,'bronze');
-
-insert into MEMBER values
-(2,'01012354567',0,9,'silver');
-
-insert into MEMBER values
-(3,'01055556666',6,1,'gold');
-
-
--- =====================================
--- ORDERS
--- =====================================
-
-insert into ORDERS values
-(1001,1,'Y','2026-06-08 10:10:00',9000);
-
-insert into ORDERS values
-(1002,2,'Y','2026-06-08 13:00:00',5500);
-
-insert into ORDERS values
-(1003,null,'Y','2026-06-10 15:30:00',3000);
-
-
--- =====================================
--- ORDER_DETAIL
--- =====================================
-
--- 주문 1001
-
-insert into ORDER_DETAIL values
-(1,1001,1,1,1500,1500);
-
-insert into ORDER_DETAIL values
-(2,1001,3,2,2000,4000);
-
-insert into ORDER_DETAIL values
-(3,1001,2,1,1500,1500);
-
--- 주문 1002
-
-insert into ORDER_DETAIL values
-(4,1002,1,1,1500,1500);
-
-insert into ORDER_DETAIL values
-(5,1002,3,2,2000,4000);
-
--- 주문 1003
-
-insert into ORDER_DETAIL values
-(6,1003,5,1,3000,3000);
-
--- =====================================
--- ORDER_OPTION
--- =====================================
-
--- detail_id=1
--- 아메리카노
--- 차가운 + 큰사이즈
-
-insert into ORDER_OPTION values
-(1,1,500);
-
-insert into ORDER_OPTION values
-(1,4,500);
-
--- detail_id=2
--- 복숭아아이스티
-
-insert into ORDER_OPTION values
-(2,1,500);
-
-insert into ORDER_OPTION values
-(2,4,500);
-
--- detail_id=3
--- 라떼
-
-insert into ORDER_OPTION values
-(3,2,0);
-
-insert into ORDER_OPTION values
-(3,3,0);
-
--- detail_id=4
--- 아메리카노
-
-insert into ORDER_OPTION values
-(4,2,0);
-
-insert into ORDER_OPTION values
-(4,3,0);
-
-
-
--- =====================================
--- PAYMENT
--- =====================================
-
-insert into PAYMENT values
-(1,1,1001,9000,'2026-06-08 10:15:00','CARD');
-
-insert into PAYMENT values
-(2,2,1002,5500,'2026-06-08 13:05:00','CARD');
-
-insert into PAYMENT values
-(3,3,1003,3000,'2026-06-10 15:35:00','CASH');
+-- Dump completed on 2026-06-18 14:34:52
