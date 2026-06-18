@@ -32,7 +32,9 @@ def render():
             "매출액",
             "주문수"
         ]
-
+        df["매출액"] = df["매출액"].apply(
+            lambda x: f"{int(x or 0):,}원"
+        )
         st.dataframe(
             df,
             width='stretch'
@@ -57,6 +59,11 @@ def render():
             "매출액",
             "주문수"
         ]
+
+        df["매출액"] = df["매출액"].apply(
+            lambda x: f"{int(x or 0):,}원"
+        )
+
 
         st.dataframe(
             df,
@@ -83,6 +90,10 @@ def render():
             "주문수"
         ]
 
+        df["매출액"] = df["매출액"].apply(
+            lambda x: f"{int(x or 0):,}원"
+        )
+        
         st.dataframe(
             df,
             width='stretch'
@@ -160,7 +171,7 @@ def render():
                 width='stretch'
             )
             
-            # category_sales = cursor.fetchall()
+
 
 
 
