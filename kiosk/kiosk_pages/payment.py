@@ -7,7 +7,7 @@ def render():
         st.session_state.page = "summary"
         st.rerun()
 
-    st.title("💳 결제 및 할인 적용")
+    st.title("결제 및 할인 적용")
 
     member_id = st.session_state.get("member_id")
 
@@ -19,8 +19,8 @@ def render():
     if member_id:
         conn, cursor = get_cursor()
         
-              cursor.execute("""
-        SELECT coupon_count
+        cursor.execute("""
+        SELECT stamp
         FROM member
         WHERE member_id=%s
         """,(member_id,))
@@ -28,20 +28,20 @@ def render():
         result = cursor.fetchone()
 
         if result:
-            coupon_count = result["coupon_count"]
+            coupon_count = result["stamp"]
 
         cursor.close()
         conn.close()
 
     # 2. 쿠폰 사용 여부 체크
     if coupon_count > 0:
-        st.write(f"🎟 보유 쿠폰 : {coupon_count}장")
+        st.write(f" 보유 쿠폰 : {coupon_count}장")
         use_coupon = st.checkbox("쿠폰 사용 (2,000원 할인)")
 
         if use_coupon:
             discount = 2000
 
-    # 3. 옵션 가격까지 포함한 총 결제 금액
+    # 3. 옵션 가격 포함한 진짜 총 결제 금액
     total_amount = 0
     for item in st.session_state.cart:
         item_price = item["price"]
@@ -50,7 +50,7 @@ def render():
             item_price += sum(op["extra_price"] for op in item["options"])
         total_amount += item_price
 
-    
+    # 결제금액 표시
     final_amount = max(total_amount - discount, 0)
     
     st.write(f"주문금액 : {total_amount:,}원")
@@ -62,7 +62,7 @@ def render():
     if st.button("결제 완료"):
         conn, cursor = get_cursor()
 
-        # 4. 주문(orders) 저장
+        # 4. 주문(orders) 저장 - 팀 ERD 규칙에 맞게 수정
         takeout_yn = "Y" if st.session_state.get("order_type") == "포장" else "N"
         cursor.execute("""
         INSERT INTO orders(takeout_type, order_date)
@@ -72,7 +72,7 @@ def render():
         order_id = cursor.lastrowid
         st.session_state.order_id = order_id
 
-        # 5. 주문 상세 저장
+        # 5. 주문 상세(orders_detail) 저장 - 테이블명과 컬럼명 ERD 규칙에 맞춤
         for item in st.session_state.cart:
             # 개별 메뉴의 총 금액(기본가 + 옵션가)을 다시 계산
             item_total = item["price"]
@@ -86,7 +86,7 @@ def render():
 
             detail_id = cursor.lastrowid
 
-            # 6. 옵션 저장
+            # 6. 옵션(order_option) 저장
             if item.get("options"):
                 for op in item["options"]:
                     cursor.execute("""
@@ -100,11 +100,11 @@ def render():
         VALUES(%s, %s, %s, NOW(), %s)
         """, (member_id, order_id, final_amount, payment))
 
-        # 8. 쿠폰 차감
+        # 8. 쿠폰(스탬프) 차감
         if use_coupon and member_id:
             cursor.execute("""
             UPDATE member
-            SET coupon_count = coupon_count - 1
+            SET stamp = stamp - 1
             WHERE member_id=%s
             """,(member_id,))
 
