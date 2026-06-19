@@ -58,7 +58,7 @@ def render():
             font-size: 120px;
             font-weight: bold;
             border-radius: 15px;
-            height: 180px;
+            height: 120px;
             border: none;
             box-shadow: 0px 4px 15px rgba(0,0,0,0.35);
             transition: all 0.3s ease;
@@ -85,7 +85,7 @@ def render():
     )
 
     st.markdown(
-        "<div style='height:57vh'></div>",
+        "<div style='height:58vh'></div>",
         unsafe_allow_html=True
     )
 
@@ -93,28 +93,29 @@ def render():
     <h2 style="
         text-align:center;
         color:#F8F1E6;
-        font-size:42px;
+        font-size:50px;
         font-weight:bold;
         font-family:'GmarketSans';
         text-shadow:2px 2px 5px rgba(0,0,0,0.5);
     ">
-    어디서 드시겠어요?
+    🍃오늘도  NET' 하게 
     </h2>
     """, unsafe_allow_html=True)
 
     st.markdown("""
     <p style="
         text-align:center;
-        color:white;
+        color:#F5F7FA;
         font-size:20px;
         margin-top:30px;
         margin-bottom:60px;
+        ont-family:'GmarketSans';
     ">
-    원하시는 주문 방식을 선택해주세요
+    매장 이용 또는 포장을 선택해주세요
     </p>
     """, unsafe_allow_html=True)
 
-    space1, col1, gap1, col2, gap2, col3, space2 = st.columns([4, 1.2, 0.3, 1.2, 0.2, 0.4, 3])
+    space1, col1, gap1, col2, gap2, col3, space2 = st.columns([3.5, 1.1, 0.3, 1.1, 0.3, 0.4, 3])
 
     with col1:
         if st.button("매장", use_container_width=True):
@@ -132,4 +133,3 @@ def render():
         if st.button("⚙️"):
             st.session_state.page = "admin_login"
             st.rerun() 
-           
