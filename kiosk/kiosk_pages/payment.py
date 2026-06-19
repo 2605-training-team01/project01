@@ -112,12 +112,16 @@ def render():
             # 🚨 수정: ERD 구조에 맞게 member_id와 total_amount 제외
             cursor.execute("""
             INSERT INTO orders(
-                takeout_type,
-                order_date
+            member_id,
+            takeout_type,
+            order_date,
+            total_amount
             )
-            VALUES(%s,NOW())
+            VALUES(%s,%s,NOW(),%s)
             """, (
-                takeout_yn,
+            member_id,
+            takeout_yn,
+            final_amount 
             ))
 
             order_id = cursor.lastrowid
@@ -137,7 +141,7 @@ def render():
                         for op in item["options"]
                     )
 
-                # 🚨 수정: order_detail -> orders_detail, 컬럼명 menu_amt 로 통일
+                # 수정: order_detail -> orders_detail, 컬럼명 menu_amt 로 통일
                 cursor.execute("""
                 INSERT INTO orders_detail(
                     order_id,
