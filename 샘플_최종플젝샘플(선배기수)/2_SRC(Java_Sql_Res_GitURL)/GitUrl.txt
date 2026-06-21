@@ -1,0 +1,14 @@
+[ Git Urls ]
+
+<1팀> 
+https://github.com/kcw9297/finup-backend 
+https://github.com/kcw9297/finup-frontend
+
+<2팀>
+https://github.com/sooscode/sooscode-api.git
+https://github.com/sooscode/sooscode-frontend.git
+https://github.com/sooscode/sooscode-compile.git
+
+
+
+
