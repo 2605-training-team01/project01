@@ -14,30 +14,6 @@
 --------
 > 프로젝트 구조
 ```
-kiosk_project/
-│
-├── app.py
-│
-├── pages/
-│   ├── waiting.py
-│   ├── order_type.py
-│   ├── menu.py
-│   ├── option.py
-│   ├── cart.py
-│   ├── payment.py
-│   └── complete.py
-│
-├── services/
-│   ├── cart_service.py
-│   └── order_service.py
-│
-├── database/
-│   ├── db.py
-│   ├── menu_repository.py
-│   └── order_repository.py
-│
-└── data/
-    └── kiosk.d
 ```
 
 
