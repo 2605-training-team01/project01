@@ -62,7 +62,7 @@ def render():
     edited_df = st.data_editor(
         df,
         hide_index=True,
-        use_container_width=True,
+        width='stretch',
         disabled=["menu_id"],      # menu_id 수정 금지
         column_config={
             "menu_id": "번호",
@@ -78,6 +78,7 @@ def render():
     if st.button("수정사항 저장"):
 
         try:
+            edited_df = edited_df.fillna('')
 
             for _, row in edited_df.iterrows():
 
@@ -101,7 +102,7 @@ def render():
                 """,(
                     category_code,
                     row["menu_name"],
-                    row["menu_price"],
+                    int(row["menu_price"]),
                     row["menu_image"],
                     row["menu_id"]
                 ))
@@ -113,44 +114,6 @@ def render():
         except Exception as e:
             conn.rollback()
             st.error(e)    
-    # for menu in menus:
-
-    #     col1, col2, col3, col4 = st.columns(
-    #         [2, 2, 2, 1]
-    #     )
-
-    #     with col1:
-    #         st.write(menu["category_name"])
-
-    #     with col2:
-    #         st.write(menu["menu_name"])
-
-    #     with col3:
-    #         st.write(
-    #             f"{menu['menu_price']:,}원"
-    #         )
-
-    #     with col4:
-
-    #         if st.button(
-    #             "삭제",
-    #             key=f"del_{menu['menu_id']}"
-    #         ):
-
-    #             cursor.execute("""
-    #                 DELETE FROM menu
-    #                 WHERE menu_id = %s
-    #             """, (
-    #                 menu["menu_id"],
-    #             ))
-
-    #             conn.commit()
-
-    #             st.success(
-    #                 "메뉴가 삭제되었습니다."
-    #             )
-
-    #             st.rerun()
 
     st.divider()
 
