@@ -1,7 +1,7 @@
 import os
 import streamlit as st
 from db.database import get_cursor
-
+import pandas as pd
 
 def render():
 
@@ -57,44 +57,100 @@ def render():
 
     st.subheader("현재 메뉴")
 
-    for menu in menus:
+    df = pd.DataFrame(menus)
+    
+    edited_df = st.data_editor(
+        df,
+        hide_index=True,
+        use_container_width=True,
+        disabled=["menu_id"],      # menu_id 수정 금지
+        column_config={
+            "menu_id": "번호",
+            "category_name": "카테고리",
+            "menu_name": "메뉴명",
+            "menu_price": st.column_config.NumberColumn(
+                "가격",
+                format="%d원"
+            ),
+            "menu_image": "이미지"
+        }
+    )
+    if st.button("수정사항 저장"):
 
-        col1, col2, col3, col4 = st.columns(
-            [2, 2, 2, 1]
-        )
+        try:
 
-        with col1:
-            st.write(menu["category_name"])
+            for _, row in edited_df.iterrows():
 
-        with col2:
-            st.write(menu["menu_name"])
+                # category_name → category_code 변환
+                cursor.execute("""
+                SELECT category_code
+                FROM category
+                WHERE category_name=%s
+                """,(row["category_name"],))
 
-        with col3:
-            st.write(
-                f"{menu['menu_price']:,}원"
-            )
-
-        with col4:
-
-            if st.button(
-                "삭제",
-                key=f"del_{menu['menu_id']}"
-            ):
+                category_code = cursor.fetchone()["category_code"]
 
                 cursor.execute("""
-                    DELETE FROM menu
-                    WHERE menu_id = %s
-                """, (
-                    menu["menu_id"],
+                UPDATE menu
+                SET
+                    category_code=%s,
+                    menu_name=%s,
+                    menu_price=%s,
+                    menu_image=%s
+                WHERE menu_id=%s
+                """,(
+                    category_code,
+                    row["menu_name"],
+                    row["menu_price"],
+                    row["menu_image"],
+                    row["menu_id"]
                 ))
 
-                conn.commit()
+            conn.commit()
+            st.success("수정 완료")
+            st.rerun()
 
-                st.success(
-                    "메뉴가 삭제되었습니다."
-                )
+        except Exception as e:
+            conn.rollback()
+            st.error(e)    
+    # for menu in menus:
 
-                st.rerun()
+    #     col1, col2, col3, col4 = st.columns(
+    #         [2, 2, 2, 1]
+    #     )
+
+    #     with col1:
+    #         st.write(menu["category_name"])
+
+    #     with col2:
+    #         st.write(menu["menu_name"])
+
+    #     with col3:
+    #         st.write(
+    #             f"{menu['menu_price']:,}원"
+    #         )
+
+    #     with col4:
+
+    #         if st.button(
+    #             "삭제",
+    #             key=f"del_{menu['menu_id']}"
+    #         ):
+
+    #             cursor.execute("""
+    #                 DELETE FROM menu
+    #                 WHERE menu_id = %s
+    #             """, (
+    #                 menu["menu_id"],
+    #             ))
+
+    #             conn.commit()
+
+    #             st.success(
+    #                 "메뉴가 삭제되었습니다."
+    #             )
+
+    #             st.rerun()
 
     st.divider()
 
@@ -122,6 +178,8 @@ def render():
         "메뉴 이미지",
         type=["png", "jpg", "jpeg"]
     )
+
+    st.divider()
 
     st.subheader("옵션 설정")
 
