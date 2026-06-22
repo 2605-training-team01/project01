@@ -37,7 +37,8 @@ def render():
 
         cursor.close()
         conn.close()
-
+    else:
+        grade = ""
 
     # 쿠폰 사용 여부
 
