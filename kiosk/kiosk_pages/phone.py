@@ -74,7 +74,7 @@ def render():
                             on_click=add_digit,
                             args=(value,))
 
-    if st.button("적립"):
+    if st.button("적립하기", use_container_width=True, type="primary"):
 
         cursor.execute("""
         SELECT member_id
