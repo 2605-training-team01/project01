@@ -128,6 +128,16 @@ def render():
         row["menu_id"] for row in best_rows
     }
     
+    st.markdown("""
+        <style>
+        .menu-img img {
+            height:220px !important;
+            object-fit:cover;
+        }
+        </style>
+        """, unsafe_allow_html=True
+    )
+        
     menu_cols = st.columns(4)
     for idx, menu in enumerate(filtered_menu):
 
@@ -135,25 +145,33 @@ def render():
 
             with st.container(border=True):
                 if menu["menu_id"] in best_menu_set:
-                    st.markdown(
-                        """
-                        <div style="text-align:center;margin-bottom:8px;">
-                            <span style="
-                                background:#ff4b4b;
-                                color:white;
-                                padding:4px 10px;
-                                border-radius:15px;
-                                font-size:13px;
-                                font-weight:bold;
-                            ">
-                                BEST
-                            </span>
-                        </div>
-                        """,
-                        unsafe_allow_html=True
-                    )
+                    badge_html = """
+                    <div style="height:35px;text-align:center;margin-bottom:8px;">
+                        <span style="
+                            background:#ff4b4b;
+                            color:white;
+                            padding:4px 10px;
+                            border-radius:15px;
+                            font-size:13px;
+                            font-weight:bold;
+                        ">
+                            BEST
+                        </span>
+                    </div>
+                    """
+                else:
+                    badge_html = """
+                    <div style="height:35px;"></div>
+                    """
 
+                st.markdown(
+                    badge_html,
+                    unsafe_allow_html=True
+                )
+                
                 image_path = menu.get("menu_image")
+
+                st.markdown('<div class="menu-img">', unsafe_allow_html=True)
 
                 if image_path:
                     st.image(
@@ -165,7 +183,8 @@ def render():
                         "images/no-image.jpg",
                         width='stretch'
                     )
-                    
+                st.markdown('</div>', unsafe_allow_html=True)
+                
                 st.markdown(
                     f"""
                     <div style="text-align:center;">
