@@ -50,6 +50,23 @@ def render():
             0
         )
 
+        grade_discount = st.session_state.get(
+            "grade_discount",
+            0
+        )
+
+        total_discount = st.session_state.get(
+            "total_discount",
+            discount
+        )
+
+        grade = st.session_state.get(
+            "grade",
+            "BRONZE"
+        )
+
+
+
         final_amount = st.session_state.get(
             "final_amount",
             total_amount
@@ -94,8 +111,17 @@ def render():
             )
 
             st.write(
-                f"할인금액 : {discount:,}원"
+                f"등급할인 : {grade_discount:,}원"
             )
+
+            st.write(
+                f"쿠폰할인 : {discount:,}원"
+            )
+
+            st.write(
+                f"총 할인금액 : {total_discount:,}원"
+            )
+
 
             st.write(
                 f"결제금액 : {final_amount:,}원"
