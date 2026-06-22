@@ -3,6 +3,7 @@ import streamlit as st
 from db.database import get_cursor
 import pandas as pd
 
+
 def render():
 
     st.title("메뉴 관리")
@@ -10,8 +11,9 @@ def render():
     conn, cursor = get_cursor()
 
     # ------------------------
-    # 카테고리 조회
+    # 옵션 그룹 조회
     # ------------------------
+
     cursor.execute("""
         SELECT
             group_id,
@@ -21,6 +23,10 @@ def render():
     """)
 
     option_groups = cursor.fetchall()
+
+    # ------------------------
+    # 카테고리 조회
+    # ------------------------
 
     cursor.execute("""
         SELECT
@@ -40,6 +46,7 @@ def render():
     # ------------------------
     # 메뉴 조회
     # ------------------------
+
     cursor.execute("""
         SELECT
             m.menu_id,
@@ -58,12 +65,12 @@ def render():
     st.subheader("현재 메뉴")
 
     df = pd.DataFrame(menus)
-    
+
     edited_df = st.data_editor(
         df,
         hide_index=True,
-        width='stretch',
-        disabled=["menu_id"],      # menu_id 수정 금지
+        width="stretch",
+        disabled=["menu_id"],
         column_config={
             "menu_id": "번호",
             "category_name": "카테고리",
@@ -75,31 +82,34 @@ def render():
             "menu_image": "이미지"
         }
     )
+
     if st.button("수정사항 저장"):
 
         try:
+
             edited_df = edited_df.fillna('')
 
             for _, row in edited_df.iterrows():
 
-                # category_name → category_code 변환
                 cursor.execute("""
-                SELECT category_code
-                FROM category
-                WHERE category_name=%s
-                """,(row["category_name"],))
+                    SELECT category_code
+                    FROM category
+                    WHERE category_name=%s
+                """, (
+                    row["category_name"],
+                ))
 
                 category_code = cursor.fetchone()["category_code"]
 
                 cursor.execute("""
-                UPDATE menu
-                SET
-                    category_code=%s,
-                    menu_name=%s,
-                    menu_price=%s,
-                    menu_image=%s
-                WHERE menu_id=%s
-                """,(
+                    UPDATE menu
+                    SET
+                        category_code=%s,
+                        menu_name=%s,
+                        menu_price=%s,
+                        menu_image=%s
+                    WHERE menu_id=%s
+                """, (
                     category_code,
                     row["menu_name"],
                     int(row["menu_price"]),
@@ -108,18 +118,21 @@ def render():
                 ))
 
             conn.commit()
+
             st.success("수정 완료")
             st.rerun()
 
         except Exception as e:
+
             conn.rollback()
-            st.error(e)    
+            st.error(e)
 
     st.divider()
 
     # ------------------------
     # 메뉴 추가
     # ------------------------
+
     st.subheader("메뉴 추가")
 
     menu_name = st.text_input(
@@ -160,69 +173,138 @@ def render():
 
     if st.button("메뉴 추가"):
 
-        image_path = None
+        try:
 
-        if uploaded_file:
+            image_path = None
 
-            os.makedirs(
-                "images",
-                exist_ok=True
-            )
+            if uploaded_file:
 
-            image_path = (
-                f"images/{uploaded_file.name}"
-            )
-
-            with open(
-                image_path,
-                "wb"
-            ) as f:
-
-                f.write(
-                    uploaded_file.getbuffer()
+                os.makedirs(
+                    "images",
+                    exist_ok=True
                 )
 
-        cursor.execute("""
-            INSERT INTO menu
-            (
-                category_code,
-                menu_name,
-                menu_price,
-                menu_image
-            )
-            VALUES (%s, %s, %s, %s)
-        """, (
-            category_map[
-                selected_category
-            ],
-            menu_name,
-            menu_price,
-            image_path
-        ))
+                image_path = (
+                    f"images/{uploaded_file.name}"
+                )
 
-        new_menu_id = cursor.lastrowid
+                with open(
+                    image_path,
+                    "wb"
+                ) as f:
 
-        for group_id in selected_groups:
+                    f.write(
+                        uploaded_file.getbuffer()
+                    )
 
             cursor.execute("""
-                INSERT INTO menu_option_group
+                INSERT INTO menu
                 (
-                    menu_id,
-                    group_id
+                    category_code,
+                    menu_name,
+                    menu_price,
+                    menu_image
                 )
-                VALUES (%s, %s)
+                VALUES (%s, %s, %s, %s)
             """, (
-                new_menu_id,
-                group_id
+                category_map[
+                    selected_category
+                ],
+                menu_name,
+                menu_price,
+                image_path
             ))
 
-        conn.commit()
+            new_menu_id = cursor.lastrowid
 
-        st.success(
-            "메뉴가 추가되었습니다."
+            for group_id in selected_groups:
+
+                cursor.execute("""
+                    INSERT INTO menu_option_group
+                    (
+                        menu_id,
+                        group_id
+                    )
+                    VALUES (%s, %s)
+                """, (
+                    new_menu_id,
+                    group_id
+                ))
+
+            conn.commit()
+
+            st.success(
+                "메뉴가 추가되었습니다."
+            )
+
+            st.rerun()
+
+        except Exception as e:
+
+            conn.rollback()
+            st.error(e)
+
+    # ------------------------
+    # 메뉴 삭제
+    # ------------------------
+
+    st.divider()
+
+    st.subheader("메뉴 삭제")
+
+    if menus:
+
+        menu_map = {
+            f"{row['menu_id']} - {row['menu_name']}":
+            row["menu_id"]
+            for row in menus
+        }
+
+        selected_menu = st.selectbox(
+            "삭제할 메뉴",
+            list(menu_map.keys())
         )
 
-        st.rerun()
+        if st.button("메뉴 삭제"):
+
+            try:
+
+                menu_id = menu_map[selected_menu]
+
+                # 메뉴 옵션 연결 삭제
+                cursor.execute("""
+                    DELETE FROM menu_option_group
+                    WHERE menu_id=%s
+                """, (
+                    menu_id,
+                ))
+
+                # 메뉴 삭제
+                cursor.execute("""
+                    DELETE FROM menu
+                    WHERE menu_id=%s
+                """, (
+                    menu_id,
+                ))
+
+                conn.commit()
+
+                st.success(
+                    "메뉴가 삭제되었습니다."
+                )
+
+                st.rerun()
+
+            except Exception as e:
+
+                conn.rollback()
+                st.error(e)
+
+    else:
+
+        st.info(
+            "삭제할 메뉴가 없습니다."
+        )
 
     st.divider()
 
