@@ -154,7 +154,7 @@ def render():
             order_date,
             total_amount
             )
-            VALUES(%s,%s,%s)
+            VALUES(%s,%s,NOW(),%s)
             """, (
                 member_id,
                 "Y" if st.session_state.order_type == "포장"
