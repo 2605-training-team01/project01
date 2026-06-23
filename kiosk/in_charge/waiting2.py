@@ -5,20 +5,112 @@ import os
 
 def render():
 
-    with open("in_charge/drink.jpg", "rb") as img_file:
-        img = base64.b64encode(img_file.read()).decode()
+    # MP4 읽기
+    with open(
+        "in_charge/PixVerse_V6_Image_Text_720P_Luxury_iced_coffee.mp4",
+        "rb"
+    ) as video_file:
+        video_base64 = base64.b64encode(
+            video_file.read()
+        ).decode()
 
-    with open("fonts/GmarketSansTTFBold.ttf", "rb") as font_file:
-        font_base64 = base64.b64encode(font_file.read()).decode()
+    # 폰트 읽기
+    with open(
+        "fonts/PretendardVariable.ttf",
+        "rb"
+    ) as font_file:
+        pretendard_base64 = base64.b64encode(
+            font_file.read()
+        ).decode()
+
+    with open(
+        "fonts/GmarketSansTTFBold.ttf",
+        "rb"
+    ) as font_file:
+        gmarket_base64 = base64.b64encode(
+            font_file.read()
+        ).decode()  
 
     st.markdown(
         f"""
-        <style>  
+        <style>
+
+        @font-face {{
+            font-family: 'PretendardVariable';
+            src: url(data:font/ttf;base64,{pretendard_base64})
+                 format('truetype');
+        }}
 
         @font-face {{
             font-family: 'GmarketSans';
-            src: url(data:font/ttf;base64,{font_base64}) format('truetype');
-        }}  
+            src: url(data:font/ttf;base64,{gmarket_base64})
+                 format('truetype');
+        }}
+
+        @keyframes glow {{
+            0% {{
+                opacity: 0.4;
+                text-shadow: 0 0 5px rgba(255,255,255,0.3);
+            }}
+
+         50% {{
+            opacity: 1;
+            text-shadow: 0 0 20px rgba(255,255,255,0.8);
+        }}
+
+        100% {{
+            opacity: 0.4;
+            text-shadow: 0 0 5px rgba(255,255,255,0.3);
+        }}
+    }}
+
+    .glow-text {{
+        animation: glow 1.5s infinite ease-in-out;
+    }}
+
+        @keyframes fadeUp {{
+            from {{
+                opacity: 0;
+            transform: translateY(20px);
+            }}
+
+            to {{
+                opacity: 1;
+                transform: translateY(0);
+            }}
+        }}
+
+        .coffee {{
+            font-fmaily:'PretendardVariable' !important;
+            font-weight: 500 !important;
+            opacity: 0
+            animation: fadeUp 1s ease forwards;
+            animation-delay: 1s;
+        }}
+
+        .net {{
+            font-family:'PretendardVariable' !important;
+            font-weight: 900 !importanr;
+            opacity: 0;
+            animation: fadeUp 1s ease forwards;
+            animation-delay: 1s;
+        }}
+
+        .video-background {{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+        }}
+
+        .video-background video {{
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }}
 
         .block-container {{
             padding-top: 0rem !important;
@@ -37,26 +129,19 @@ def render():
         }}
 
         .stApp {{
-            background-image:
-                linear-gradient(
-                    rgba(0,0,0,0.35),
-                    rgba(0,0,0,0.35)
-                ),
-                url("data:image/jpeg;base64,{img}");
-
-            background-size: contain;
-            background-position: center top;
-            background-repeat: no-repeat;
+            background: transparent !important;
         }}
 
         div.stButton > button {{
-            background-color: rgba(195,170,145,0.95);
-            color: #222222;
-
+            background-color: rgba(195,170,145,0.60);
+            color: #5C4033;
             font-family: 'GmarketSans' !important;
-
             font-size: 120px;
             font-weight: bold;
+
+         
+            height: 120px;
+
             border-radius: 15px;
             height: 120px;
             border: none;
@@ -71,12 +156,12 @@ def render():
 
         div.stButton > button * {{
             font-family: 'GmarketSans' !important;
-            font-size: 30px !important;
+            font-size: 25px !important;
             font-weight: 300 !important;
         }}
 
         div.stButton > button div {{
-            font-size: 30px !important;
+            font-size: 25px !important;
         }}
 
         </style>
@@ -85,7 +170,20 @@ def render():
     )
 
     st.markdown(
-        "<div style='height:58vh'></div>",
+        f"""
+        <div class="video-background">
+            <video autoplay muted loop playsinline>
+                <source
+                    src="data:video/mp4;base64,{video_base64}"
+                    type="video/mp4">
+            </video>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        "<div style='height:25vh'></div>",
         unsafe_allow_html=True
     )
 
@@ -93,43 +191,90 @@ def render():
     <h2 style="
         text-align:center;
         color:#F8F1E6;
-        font-size:50px;
+        font-size:180px;
         font-weight:bold;
-        font-family:'GmarketSans';
+        font-family:'PretendardVariable';
         text-shadow:2px 2px 5px rgba(0,0,0,0.5);
     ">
-    🍃오늘도  NET' 하게 
+
+    <span class="coffee">Coffee?</span>
+    <span class="net"> NET.</span>
+
     </h2>
     """, unsafe_allow_html=True)
 
     st.markdown("""
-    <p style="
+    <p class="glow-text" style="
         text-align:center;
-        color:#F5F7FA;
-        font-size:20px;
-        margin-top:30px;
-        margin-bottom:60px;
-        ont-family:'GmarketSans';
+        color:#FFE8A3;
+        font-size:35px;
+        margin-top:3px;
+        margin-bottom:50px;
+        font-family:'PretendardVariable';
     ">
-    매장 이용 또는 포장을 선택해주세요
+    원하시는 주문방식을 선택하세요
     </p>
-    """, unsafe_allow_html=True)
+    """, unsafe_allow_html=True)           
 
-    space1, col1, gap1, col2, gap2, col3, space2 = st.columns([3.5, 1.1, 0.3, 1.1, 0.3, 0.4, 3])
+    # st.markdown("""
+    # <p style="
+    #     text-align:center;
+    #     color:#F5F7FA;
+    #     font-size:20px;
+    #     margin-top:5px;
+    #     margin-bottom:80px;
+    #     font-family:'PretendardVariable';
+    # ">                    
+    # [탭을 선택해주세요] 
+    # </p>
+    # """, unsafe_allow_html=True)
 
-    with col1:
-        if st.button("매장", use_container_width=True):
-            st.session_state.order_type = "매장"
-            st.session_state.page = "menu"
-            st.rerun()
+    left, center, right = st.columns([1, 3, 1])
 
-    with col2:
-        if st.button("포장", use_container_width=True):
-            st.session_state.order_type = "포장"
-            st.session_state.page = "menu"
-            st.rerun()
+    with center:
 
-    with col3:
+        col1, gap1, col2 = st.columns([1, 0.2, 1])
+
+        with col1:
+            if st.button("[ FOR HERE ]", use_container_width=True):
+                st.session_state.order_type = "매장"
+                st.session_state.page = "menu"
+                st.rerun()
+
+        with col2:
+            if st.button("[ TAKE OUT ]", use_container_width=True):
+                st.session_state.order_type = "포장"
+                st.session_state.page = "menu"
+                st.rerun()
+
+    st.markdown(
+        "<div style='height:60px'></div>",
+        unsafe_allow_html=True
+    )
+
+    admin_space, admin = st.columns([9, 1])
+
+    with admin:
         if st.button("⚙️"):
             st.session_state.page = "admin_login"
-            st.rerun() 
+            st.rerun()
+
+
+    # space1, col1, gap1, col2, gap2, col3, space2 = st.columns([3.5, 0.8, 0.3, 0.8, 5, 0.5, 3.03])
+
+    # with col1:
+    #     if st.button("매장", use_container_width=True):
+    #         st.session_state.order_type = "매장"
+    #         st.session_state.page = "menu"
+    #         st.rerun()
+
+    # with col2:
+    #     if st.button("포장", use_container_width=True):
+    #         st.session_state.order_type = "포장"
+    #         st.session_state.page = "menu"
+    #         st.rerun()
+
+    # with col3:
+    #     if st.button("⚙️"):
+    #         st.session_state.page = "admin_login"
+    #         st.rerun() 
