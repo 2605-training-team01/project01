@@ -1,5 +1,6 @@
 import streamlit as st
 from db.database import get_cursor
+import time
 
 
 def render():
@@ -254,6 +255,7 @@ def render():
                 st.success(
                     f"🎉 등급이 {old_grade} → {new_grade}로 승급되었습니다!"
                 )
+                time.sleep(2)
         conn.commit()
 
 
