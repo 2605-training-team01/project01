@@ -2,6 +2,10 @@ import streamlit as st
 
 
 def render():
+    if "grade_upgrade_msg" in st.session_state:
+        st.success(st.session_state.grade_upgrade_msg)
+        del st.session_state.grade_upgrade_msg
+
     if "receipt_print" not in st.session_state:
         st.session_state.receipt_print = False
 
@@ -62,7 +66,7 @@ def render():
 
         grade = st.session_state.get(
             "grade",
-            "BRONZE"
+            "비회원"
         )
 
 
@@ -109,6 +113,9 @@ def render():
             st.write(
                 f"주문금액 : {total_amount:,}원"
             )
+            
+            if grade != "비회원":
+                st.write(f"회원등급 : {grade}")
 
             st.write(
                 f"등급할인 : {grade_discount:,}원"
