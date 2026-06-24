@@ -140,7 +140,9 @@ INSERT INTO `option` VALUES
 (7,3,'샷_없음',0),
 (8,4,'하얀색',0),
 (9,4,'검정색',0),
-(10,5,'휘핑크림',500);
+(10,5,'휘핑크림',500),
+(11,5,'추가안함',0);
+
 /*!40000 ALTER TABLE `option` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
