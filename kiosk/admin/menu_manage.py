@@ -6,6 +6,19 @@ import pandas as pd
 
 def render():
 
+    # ------------------------
+    # 확인 상태 초기화
+    # ------------------------
+
+    for key in [
+        "confirm_add",
+        "confirm_update",
+        "confirm_option",
+        "confirm_delete"
+    ]:
+        if key not in st.session_state:
+            st.session_state[key] = False
+
     st.title("메뉴 관리")
 
     conn, cursor = get_cursor()
@@ -59,7 +72,7 @@ def render():
 
     menus = cursor.fetchall()
 
-    # ------------------------
+   # ------------------------
     # 현재 메뉴
     # ------------------------
     st.subheader("현재 메뉴")
@@ -85,47 +98,78 @@ def render():
 
     if st.button("수정사항 저장"):
 
-        try:
+        st.session_state.confirm_add = False
+        st.session_state.confirm_option = False
+        st.session_state.confirm_delete = False
 
-            edited_df = edited_df.fillna('')
+        st.session_state.confirm_update = True
 
-            for _, row in edited_df.iterrows():
+    if st.session_state.confirm_update:
 
-                cursor.execute("""
-                    SELECT category_code
-                    FROM category
-                    WHERE category_name=%s
-                """, (
-                    row["category_name"],
-                ))
+        st.warning("메뉴 정보를 수정하시겠습니까?")
 
-                category_code = cursor.fetchone()["category_code"]
+        col1, col2 = st.columns(2)
 
-                cursor.execute("""
-                    UPDATE menu
-                    SET
-                        category_code=%s,
-                        menu_name=%s,
-                        menu_price=%s,
-                        menu_image=%s
-                    WHERE menu_id=%s
-                """, (
-                    category_code,
-                    row["menu_name"],
-                    int(row["menu_price"]),
-                    row["menu_image"],
-                    row["menu_id"]
-                ))
+        with col1:
 
-            conn.commit()
+            if st.button(
+                "예, 수정합니다",
+                key="update_yes"
+            ):
 
-            st.success("수정 완료")
-            st.rerun()
+                try:
 
-        except Exception as e:
+                    edited_df = edited_df.fillna('')
 
-            conn.rollback()
-            st.error(e)
+                    for _, row in edited_df.iterrows():
+
+                        cursor.execute("""
+                            SELECT category_code
+                            FROM category
+                            WHERE category_name=%s
+                        """, (
+                            row["category_name"],
+                        ))
+
+                        category_code = cursor.fetchone()["category_code"]
+
+                        cursor.execute("""
+                            UPDATE menu
+                            SET
+                                category_code=%s,
+                                menu_name=%s,
+                                menu_price=%s,
+                                menu_image=%s
+                            WHERE menu_id=%s
+                        """, (
+                            category_code,
+                            row["menu_name"],
+                            int(row["menu_price"]),
+                            row["menu_image"],
+                            row["menu_id"]
+                        ))
+
+                    conn.commit()
+
+                    st.session_state.confirm_update = False
+
+                    st.success("수정 완료")
+                    st.rerun()
+
+                except Exception as e:
+
+                    conn.rollback()
+                    st.error(e)
+
+        with col2:
+
+            if st.button(
+                "취소",
+                key="update_no"
+            ):
+
+                st.session_state.confirm_update = False
+                st.rerun()
 
     st.divider()
 
@@ -134,7 +178,9 @@ def render():
     # ------------------------
     st.subheader("메뉴 추가")
 
-    menu_name = st.text_input("메뉴명")
+    menu_name = st.text_input(
+        "메뉴명"
+    )
 
     menu_price = st.number_input(
         "가격",
@@ -168,77 +214,116 @@ def render():
 
     if st.button("메뉴 추가"):
 
-        try:
+        st.session_state.confirm_update = False
+        st.session_state.confirm_option = False
+        st.session_state.confirm_delete = False
 
-            image_path = None
+        st.session_state.confirm_add = True
 
-            if uploaded_file:
+    
+    if st.session_state.confirm_add:
 
-                os.makedirs(
-                    "images",
-                    exist_ok=True
-                )
+        st.warning(
+            f"""
+    메뉴명 : {menu_name}
 
-                image_path = (
-                    f"images/{uploaded_file.name}"
-                )
+    가격 : {menu_price:,}원
 
-                with open(
-                    image_path,
-                    "wb"
-                ) as f:
+    메뉴를 추가하시겠습니까?
+    """
+        )
 
-                    f.write(
-                        uploaded_file.getbuffer()
+        col1, col2 = st.columns(2)
+
+        with col1:
+
+            if st.button(
+                "예, 추가합니다",
+                key="add_yes"
+            ):
+
+                try:
+
+                    image_path = None
+
+                    if uploaded_file:
+
+                        os.makedirs(
+                            "images",
+                            exist_ok=True
+                        )
+
+                        image_path = (
+                            f"images/{uploaded_file.name}"
+                        )
+
+                        with open(
+                            image_path,
+                            "wb"
+                        ) as f:
+
+                            f.write(
+                                uploaded_file.getbuffer()
+                            )
+
+                    cursor.execute("""
+                        INSERT INTO menu
+                        (
+                            category_code,
+                            menu_name,
+                            menu_price,
+                            menu_image
+                        )
+                        VALUES (%s, %s, %s, %s)
+                    """, (
+                        category_map[selected_category],
+                        menu_name,
+                        menu_price,
+                        image_path
+                    ))
+
+                    new_menu_id = cursor.lastrowid
+
+                    for group_id in selected_groups:
+
+                        cursor.execute("""
+                            INSERT INTO menu_option_group
+                            (
+                                menu_id,
+                                group_id
+                            )
+                            VALUES (%s, %s)
+                        """, (
+                            new_menu_id,
+                            group_id
+                        ))
+
+                    conn.commit()
+
+                    st.session_state.confirm_add = False
+
+                    st.success(
+                        "메뉴가 추가되었습니다."
                     )
 
-            cursor.execute("""
-                INSERT INTO menu
-                (
-                    category_code,
-                    menu_name,
-                    menu_price,
-                    menu_image
-                )
-                VALUES (%s, %s, %s, %s)
-            """, (
-                category_map[selected_category],
-                menu_name,
-                menu_price,
-                image_path
-            ))
+                    st.rerun()
 
-            new_menu_id = cursor.lastrowid
+                except Exception as e:
 
-            for group_id in selected_groups:
+                    conn.rollback()
+                    st.error(e)
 
-                cursor.execute("""
-                    INSERT INTO menu_option_group
-                    (
-                        menu_id,
-                        group_id
-                    )
-                    VALUES (%s, %s)
-                """, (
-                    new_menu_id,
-                    group_id
-                ))
+        with col2:
 
-            conn.commit()
+            if st.button(
+                "취소",
+                key="add_no"
+            ):
 
-            st.success(
-                "메뉴가 추가되었습니다."
-            )
-
-            st.rerun()
-
-        except Exception as e:
-
-            conn.rollback()
-            st.error(e)
+                st.session_state.confirm_add = False
+                st.rerun()
 
     st.divider()
-
     # ------------------------
     # 메뉴 옵션 수정
     # ------------------------
@@ -304,42 +389,75 @@ def render():
             "옵션 수정 저장",
             key="save_menu_option"
         ):
+            
+            st.session_state.confirm_add = False
+            st.session_state.confirm_update = False
+            st.session_state.confirm_delete = False
 
-            try:
+            st.session_state.confirm_option = True
 
-                cursor.execute("""
-                    DELETE FROM menu_option_group
-                    WHERE menu_id=%s
-                """, (
-                    menu_id,
-                ))
+        if st.session_state.confirm_option:
 
-                for group_id in edited_groups:
+            st.warning(
+                "메뉴 옵션을 수정하시겠습니까?"
+            )
 
-                    cursor.execute("""
-                        INSERT INTO menu_option_group
-                        (
+            col1, col2 = st.columns(2)
+
+            with col1:
+
+                if st.button(
+                    "예, 수정합니다",
+                    key="option_yes"
+                ):
+
+                    try:
+
+                        cursor.execute("""
+                            DELETE FROM menu_option_group
+                            WHERE menu_id=%s
+                        """, (
                             menu_id,
-                            group_id
+                        ))
+
+                        for group_id in edited_groups:
+
+                            cursor.execute("""
+                                INSERT INTO menu_option_group
+                                (
+                                    menu_id,
+                                    group_id
+                                )
+                                VALUES (%s, %s)
+                            """, (
+                                menu_id,
+                                group_id
+                            ))
+
+                        conn.commit()
+
+                        st.session_state.confirm_option = False
+
+                        st.success(
+                            "옵션이 수정되었습니다."
                         )
-                        VALUES (%s, %s)
-                    """, (
-                        menu_id,
-                        group_id
-                    ))
 
-                conn.commit()
+                        st.rerun()
 
-                st.success(
-                    "옵션이 수정되었습니다."
-                )
+                    except Exception as e:
 
-                st.rerun()
+                        conn.rollback()
+                        st.error(e)
 
-            except Exception as e:
+            with col2:
 
-                conn.rollback()
-                st.error(e)
+                if st.button(
+                    "취소",
+                    key="option_no"
+                ):
+
+                    st.session_state.confirm_option = False
+                    st.rerun()
 
     else:
 
@@ -348,7 +466,6 @@ def render():
         )
 
     st.divider()
-
     # ------------------------
     # 메뉴 삭제
     # ------------------------
@@ -369,36 +486,73 @@ def render():
 
         if st.button("메뉴 삭제"):
 
-            try:
+            st.session_state.confirm_add = False
+            st.session_state.confirm_update = False
+            st.session_state.confirm_option = False
 
-                menu_id = menu_map[selected_menu]
+            st.session_state.confirm_delete = True
 
-                cursor.execute("""
-                    DELETE FROM menu_option_group
-                    WHERE menu_id=%s
-                """, (
-                    menu_id,
-                ))
+        if st.session_state.confirm_delete:
 
-                cursor.execute("""
-                    DELETE FROM menu
-                    WHERE menu_id=%s
-                """, (
-                    menu_id,
-                ))
+            st.error(
+                f"{selected_menu} 메뉴를 삭제하시겠습니까?"
+            )
 
-                conn.commit()
+            col1, col2 = st.columns(2)
 
-                st.success(
-                    "메뉴가 삭제되었습니다."
-                )
+            with col1:
 
-                st.rerun()
+                if st.button(
+                    "예, 삭제합니다",
+                    key="delete_yes"
+                ):
 
-            except Exception as e:
+                    try:
 
-                conn.rollback()
-                st.error(e)
+                        menu_id = menu_map[
+                            selected_menu
+                        ]
+
+                        # 메뉴 옵션 연결 삭제
+                        cursor.execute("""
+                            DELETE FROM menu_option_group
+                            WHERE menu_id=%s
+                        """, (
+                            menu_id,
+                        ))
+
+                        # 메뉴 삭제
+                        cursor.execute("""
+                            DELETE FROM menu
+                            WHERE menu_id=%s
+                        """, (
+                            menu_id,
+                        ))
+
+                        conn.commit()
+
+                        st.session_state.confirm_delete = False
+
+                        st.success(
+                            "메뉴가 삭제되었습니다."
+                        )
+
+                        st.rerun()
+
+                    except Exception as e:
+
+                        conn.rollback()
+                        st.error(e)
+
+            with col2:
+
+                if st.button(
+                    "취소",
+                    key="delete_no"
+                ):
+
+                    st.session_state.confirm_delete = False
+                    st.rerun()
 
     else:
 
