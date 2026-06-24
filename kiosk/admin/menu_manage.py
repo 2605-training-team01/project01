@@ -13,7 +13,6 @@ def render():
     # ------------------------
     # 옵션 그룹 조회
     # ------------------------
-
     cursor.execute("""
         SELECT
             group_id,
@@ -27,7 +26,6 @@ def render():
     # ------------------------
     # 카테고리 조회
     # ------------------------
-
     cursor.execute("""
         SELECT
             category_code,
@@ -46,7 +44,6 @@ def render():
     # ------------------------
     # 메뉴 조회
     # ------------------------
-
     cursor.execute("""
         SELECT
             m.menu_id,
@@ -62,6 +59,9 @@ def render():
 
     menus = cursor.fetchall()
 
+    # ------------------------
+    # 현재 메뉴
+    # ------------------------
     st.subheader("현재 메뉴")
 
     df = pd.DataFrame(menus)
@@ -132,12 +132,9 @@ def render():
     # ------------------------
     # 메뉴 추가
     # ------------------------
-
     st.subheader("메뉴 추가")
 
-    menu_name = st.text_input(
-        "메뉴명"
-    )
+    menu_name = st.text_input("메뉴명")
 
     menu_price = st.number_input(
         "가격",
@@ -155,8 +152,6 @@ def render():
         type=["png", "jpg", "jpeg"]
     )
 
-    st.divider()
-
     st.subheader("옵션 설정")
 
     selected_groups = []
@@ -165,7 +160,7 @@ def render():
 
         if st.checkbox(
             group["group_name"],
-            key=f"group_{group['group_id']}"
+            key=f"add_group_{group['group_id']}"
         ):
             selected_groups.append(
                 group["group_id"]
@@ -207,9 +202,7 @@ def render():
                 )
                 VALUES (%s, %s, %s, %s)
             """, (
-                category_map[
-                    selected_category
-                ],
+                category_map[selected_category],
                 menu_name,
                 menu_price,
                 image_path
@@ -244,12 +237,121 @@ def render():
             conn.rollback()
             st.error(e)
 
+    st.divider()
+
     # ------------------------
-    # 메뉴 삭제
+    # 메뉴 옵션 수정
     # ------------------------
+    st.subheader("메뉴 옵션 수정")
+
+    if menus:
+
+        menu_option_map = {
+            f"{row['menu_id']} - {row['menu_name']}":
+            row["menu_id"]
+            for row in menus
+        }
+
+        selected_menu_for_option = st.selectbox(
+            "옵션을 수정할 메뉴",
+            list(menu_option_map.keys()),
+            key="option_edit_menu"
+        )
+
+        menu_id = menu_option_map[
+            selected_menu_for_option
+        ]
+
+        cursor.execute("""
+            SELECT group_id
+            FROM menu_option_group
+            WHERE menu_id=%s
+        """, (
+            menu_id,
+        ))
+
+        current_groups = [
+            row["group_id"]
+            for row in cursor.fetchall()
+        ]
+
+        edited_groups = []
+
+        st.write("적용할 옵션 선택")
+
+        for group in option_groups:
+
+            checked = st.checkbox(
+                group["group_name"],
+                value=(
+                    group["group_id"]
+                    in current_groups
+                ),
+                key=(
+                    f"edit_group_"
+                    f"{menu_id}_"
+                    f"{group['group_id']}"
+                )
+            )
+
+            if checked:
+
+                edited_groups.append(
+                    group["group_id"]
+                )
+
+        if st.button(
+            "옵션 수정 저장",
+            key="save_menu_option"
+        ):
+
+            try:
+
+                cursor.execute("""
+                    DELETE FROM menu_option_group
+                    WHERE menu_id=%s
+                """, (
+                    menu_id,
+                ))
+
+                for group_id in edited_groups:
+
+                    cursor.execute("""
+                        INSERT INTO menu_option_group
+                        (
+                            menu_id,
+                            group_id
+                        )
+                        VALUES (%s, %s)
+                    """, (
+                        menu_id,
+                        group_id
+                    ))
+
+                conn.commit()
+
+                st.success(
+                    "옵션이 수정되었습니다."
+                )
+
+                st.rerun()
+
+            except Exception as e:
+
+                conn.rollback()
+                st.error(e)
+
+    else:
+
+        st.info(
+            "등록된 메뉴가 없습니다."
+        )
 
     st.divider()
 
+    # ------------------------
+    # 메뉴 삭제
+    # ------------------------
     st.subheader("메뉴 삭제")
 
     if menus:
@@ -271,7 +373,6 @@ def render():
 
                 menu_id = menu_map[selected_menu]
 
-                # 메뉴 옵션 연결 삭제
                 cursor.execute("""
                     DELETE FROM menu_option_group
                     WHERE menu_id=%s
@@ -279,7 +380,6 @@ def render():
                     menu_id,
                 ))
 
-                # 메뉴 삭제
                 cursor.execute("""
                     DELETE FROM menu
                     WHERE menu_id=%s
