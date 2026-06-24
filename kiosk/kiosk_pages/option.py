@@ -64,21 +64,27 @@ def render():
             for op in option_list
         ]
 
+        default_idx = 0
+
+        for i, op in enumerate(option_list):
+            if op["extra_price"] == 0:
+                default_idx = i
+                break
+
         selected = st.radio(
             label=group_name,
             options=option_names,
             key=f"radio_{group_name}",
-            index=None
+            index=default_idx
         )
-        if selected is not None:
 
-            selected_op = option_list[
-                option_names.index(selected)
-            ]
+        selected_op = option_list[
+            option_names.index(selected)
+        ]
 
-            selected_options.append(selected_op)
+        selected_options.append(selected_op)
 
-            total_price += selected_op["extra_price"]
+        total_price += selected_op["extra_price"]
 
     st.metric(
         "금액",
@@ -101,10 +107,7 @@ def render():
 
         if st.button("장바구니 담기"):
 
-            if len(selected_options) != len(grouped_options):
-                st.error("모든 옵션을 선택해주세요.")
-                return
-
+            
             st.session_state.cart.append({
                 "menu_id": menu["menu_id"],
                 "menu_name": menu["menu_name"],
