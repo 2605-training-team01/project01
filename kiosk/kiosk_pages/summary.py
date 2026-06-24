@@ -10,11 +10,7 @@ def render():
     st.title("주문 내역")
     if len(st.session_state.cart) == 0:
         st.info("장바구니가 비어 있습니다.")
-    
-        if st.button("전체 비우기"):
-            st.session_state.cart = []
-            st.rerun()
-            
+
         if st.button("메뉴 선택"):
             st.session_state.page = "menu"
             st.rerun()
