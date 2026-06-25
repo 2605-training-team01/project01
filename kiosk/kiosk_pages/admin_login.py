@@ -38,8 +38,9 @@ def render():
             admin = cursor.fetchone()
 
             if admin:
-
-                token = str(uuid.uuid4())
+                
+                # 토큰값에 하이픈(-)제거 
+                token = str(uuid.uuid4().hex)
 
                 cursor.execute("""
                     UPDATE admin
