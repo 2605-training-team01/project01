@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `admin`;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `admin` (
   `admin_id` int(11) NOT NULL AUTO_INCREMENT,
-  `admin_name` varchar(50) NOT NULL,
+  `admin_name` varchar(50) NOT NULL UNIQUE,
   `admin_pw` varchar(100) NOT NULL,
   `login_token` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`admin_id`)
