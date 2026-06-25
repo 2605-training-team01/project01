@@ -7,7 +7,7 @@ def render():
 
     # MP4 읽기
     with open(
-        "in_charge/PixVerse_V6_Image_Text_720P_Luxury_iced_coffee.mp4",
+        "in_charge/image/PixVerse_V6_Image_Text_720P_Luxury_iced_coffee.mp4",
         "rb"
     ) as video_file:
         video_base64 = base64.b64encode(
@@ -236,13 +236,13 @@ def render():
         col1, gap1, col2 = st.columns([1, 0.2, 1])
 
         with col1:
-            if st.button("[ FOR HERE ]", use_container_width=True):
+            if st.button("[ FOR HERE ] 매장", use_container_width=True):
                 st.session_state.order_type = "매장"
                 st.session_state.page = "menu"
                 st.rerun()
 
         with col2:
-            if st.button("[ TAKE OUT ]", use_container_width=True):
+            if st.button("[ TAKE OUT ] 포장", use_container_width=True):
                 st.session_state.order_type = "포장"
                 st.session_state.page = "menu"
                 st.rerun()
