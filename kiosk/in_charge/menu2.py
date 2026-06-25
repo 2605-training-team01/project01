@@ -208,6 +208,11 @@ def render():
         selected_category,
         []
     )
+
+    st.markdown("""
+    </style>
+    """, unsafe_allow_html=True)
+
     menu_cols = st.columns(2)
 
     for idx, menu in enumerate(filtered_menu):
@@ -216,15 +221,27 @@ def render():
 
             with st.container(border=True):
 
-                image_path = (
-                    "in_charge/image/UImenu/"
-                    + menu["menu_image"]
-                )
+                image_path = menu.get("menu_image")
 
-                st.image(
-                    image_path,
-                    use_container_width=True
-                )
+                st.markdown('<div class="menu-img">',unsafe_allow_html=True)
+                
+                if image_path:
+                    st.image(
+                        image_path,
+                        width="stretch"
+                    )
+
+                st.markdown("</div>",unsafe_allow_html=True)
+
+    #             image_path = (
+    #                 "in_charge/image/UImenu/"
+    #                 + menu["menu_image"]
+    #             )
+
+    #             st.image(
+    #                 image_path,
+    #                 use_container_width=True
+    #             )
 
                 st.markdown(
                     f"### {menu['menu_name']}"
