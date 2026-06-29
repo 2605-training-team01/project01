@@ -36,17 +36,17 @@ def render():
         # 일별
         with tab_day:
             cursor.execute("SELECT pay_date, SUM(final_amt) AS sales, COUNT(*) AS orders FROM payment GROUP BY pay_date ORDER BY pay_date DESC")
-            st.dataframe(format_sales_df(cursor.fetchall(), ["날짜", "매출액", "결제건수"]), use_container_width=True)
+            st.dataframe(format_sales_df(cursor.fetchall(), ["날짜", "매출액", "결제건수"]), width='stretch')
 
         # 월별
         with tab_month:
             cursor.execute("SELECT DATE_FORMAT(pay_date,'%Y-%m') AS month, SUM(final_amt) AS sales, COUNT(*) AS orders FROM payment GROUP BY month ORDER BY month DESC")
-            st.dataframe(format_sales_df(cursor.fetchall(), ["월", "매출액", "결제건수"]), use_container_width=True)
+            st.dataframe(format_sales_df(cursor.fetchall(), ["월", "매출액", "결제건수"]), width='stretch')
 
         # 연도별
         with tab_year:
             cursor.execute("SELECT YEAR(pay_date) AS year, SUM(final_amt) AS sales, COUNT(*) AS orders FROM payment GROUP BY year ORDER BY year DESC")
-            st.dataframe(format_sales_df(cursor.fetchall(), ["연도", "매출액", "결제건수"]), use_container_width=True)
+            st.dataframe(format_sales_df(cursor.fetchall(), ["연도", "매출액", "결제건수"]), width='stretch')
 
         # 기간 검색
         with tab_search:
@@ -71,17 +71,17 @@ def render():
                 # 결제수단별
                 cursor.execute("SELECT pay_type, COUNT(*) AS cnt, SUM(final_amt) AS sales FROM payment WHERE pay_date BETWEEN %s AND %s GROUP BY pay_type", (start_date, end_date))
                 st.subheader("결제수단별 통계")
-                st.dataframe(format_sales_df(cursor.fetchall(), ["결제수단", "결제건수", "매출액"], {"pay_type":"결제수단", "cnt":"결제건수", "sales":"매출액"}), use_container_width=True)
+                st.dataframe(format_sales_df(cursor.fetchall(), ["결제수단", "결제건수", "매출액"], {"pay_type":"결제수단", "cnt":"결제건수", "sales":"매출액"}), width='stretch')
 
                 # 카테고리별
                 cursor.execute("SELECT c.category_name, SUM(od.amount) AS sales FROM order_detail od JOIN menu m ON od.menu_id = m.menu_id JOIN category c ON m.category_code = c.category_code JOIN orders o ON od.order_id = o.order_id WHERE DATE(o.order_date) BETWEEN %s AND %s GROUP BY c.category_name ORDER BY sales DESC", (start_date, end_date))
                 st.subheader("카테고리별 매출")
-                st.dataframe(format_sales_df(cursor.fetchall(), ["카테고리", "매출액"], {"category_name":"카테고리", "sales":"매출액"}), use_container_width=True)
+                st.dataframe(format_sales_df(cursor.fetchall(), ["카테고리", "매출액"], {"category_name":"카테고리", "sales":"매출액"}), width='stretch')
 
                 # 메뉴별
                 cursor.execute("SELECT m.menu_name, SUM(od.quantity) AS qty, SUM(od.amount) AS sales FROM order_detail od JOIN menu m ON od.menu_id = m.menu_id JOIN orders o ON od.order_id = o.order_id WHERE DATE(o.order_date) BETWEEN %s AND %s GROUP BY m.menu_name ORDER BY qty DESC", (start_date, end_date))
                 st.subheader("메뉴별 판매 현황")
-                st.dataframe(format_sales_df(cursor.fetchall(), ["메뉴명", "판매수량", "매출액"], {"menu_name":"메뉴명", "qty":"판매수량", "sales":"매출액"}), use_container_width=True)
+                st.dataframe(format_sales_df(cursor.fetchall(), ["메뉴명", "판매수량", "매출액"], {"menu_name":"메뉴명", "qty":"판매수량", "sales":"매출액"}), width='stretch')
 
         # 회원조회
         with tab_member:
@@ -98,7 +98,7 @@ def render():
                     st.write(f"보유 스탬프 : {member['stamp'] if isinstance(member, dict) else member[2]}개")
                     
                     cursor.execute("SELECT pay_date, pay_type, final_amt FROM payment WHERE member_id=%s ORDER BY pay_date DESC", (m_id,))
-                    st.dataframe(format_sales_df(cursor.fetchall(), ["결제일", "결제수단", "결제금액"], {"pay_date":"결제일", "pay_type":"결제수단", "final_amt":"결제금액"}), use_container_width=True)
+                    st.dataframe(format_sales_df(cursor.fetchall(), ["결제일", "결제수단", "결제금액"], {"pay_date":"결제일", "pay_type":"결제수단", "final_amt":"결제금액"}), width='stretch')
 
         # 인기 메뉴
         st.divider()
