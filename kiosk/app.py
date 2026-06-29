@@ -6,8 +6,8 @@ from utils.cookies import cookie_manager
 from in_charge.waiting2 import render  as waiting_page
 #from kiosk_pages.waiting import render as waiting_page
 from kiosk_pages.order_type import render as order_type_page
-# from kiosk_pages.menu import render as menu_page
-from in_charge.menu2 import render as menu_page
+from kiosk_pages.menu import render as menu_page
+# from in_charge.menu2 import render as menu_page
 from kiosk_pages.option import render as option_page
 from kiosk_pages.summary import render as summary_page
 from kiosk_pages.payment import render as payment_page
