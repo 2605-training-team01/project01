@@ -165,21 +165,22 @@ def render():
             """,(start_date,end_date))
             category_sales = cursor.fetchall()
 
+            if category_sales:
+                df = pd.DataFrame(category_sales)
+                df.columns = ["카테고리", "매출액"]
 
-            df = pd.DataFrame(category_sales)
-            df.columns = ["카테고리", "매출액"]
+                df["매출액"] = df["매출액"].apply(
+                    lambda x: f"{int(x or 0):,}원"
+                )
 
-            df["매출액"] = df["매출액"].apply(
-                lambda x: f"{int(x or 0):,}원"
-            )
+                st.subheader("카테고리별 매출") 
 
-            st.subheader("카테고리별 매출")
-
-            st.dataframe(
-                df,
-                width='stretch'
-            )
-            
+                st.dataframe(
+                    df,
+                    width='stretch'
+                )
+            else:
+                st.info("조회된 카테고리 매출이 없습니다.")
 
 
 
@@ -207,21 +208,24 @@ def render():
 
             menu_sales = cursor.fetchall()
 
-            df = pd.DataFrame(menu_sales)
-            df.columns = ["메뉴", "판매수량", "매출액"]
+            if menu_sales:
+                df = pd.DataFrame(menu_sales)
+                df.columns = ["메뉴", "판매수량", "매출액"]
 
-            df["매출액"] = df["매출액"].apply(
-                lambda x: f"{int(x or 0):,}원"
-            )
+                df["매출액"] = df["매출액"].apply(
+                    lambda x: f"{int(x or 0):,}원"
+                )
 
-            st.subheader(
-                "메뉴별 판매 현황"
-            )
+                st.subheader(
+                    "메뉴별 판매 현황"
+                )
             
-            st.dataframe(
-                df,
-                width='stretch'
-            )
+                st.dataframe(
+                    df,
+                    width='stretch'
+                )
+            else:
+                st.info("조회된 메뉴 판매 내역이 없습니다.")
 
 
         # 인기 메뉴 TOP 5
