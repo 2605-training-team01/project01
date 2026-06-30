@@ -21,7 +21,6 @@ from admin.menu_manage import render as menu_manage_page
 from admin.sales import render as sales_page
 from admin.option_manage import render as option_manage_page
 from admin.change_password import render as change_password
-from admin.member_manage import render as member_manage_page
 
 st.set_page_config(
     page_title="키오스크",
@@ -83,7 +82,6 @@ PAGE_MAP = {
     "menu_manage": menu_manage_page,
     "sales": sales_page,
     "option_manage": option_manage_page,
-    "member_manage": member_manage_page,
 }
 
 # --------------------------

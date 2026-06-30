@@ -20,8 +20,7 @@ def render():
 
     st.subheader("관리 메뉴")
 
-    # 기존 3개 → 4개로 변경
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3 = st.columns(3)
 
     with col1:
         if st.button("메뉴 관리"):
@@ -36,12 +35,6 @@ def render():
     with col3:
         if st.button("매출 통계"):
             st.session_state.page = "sales"
-            st.rerun()
-
-    # ⭐ 새로 추가
-    with col4:
-        if st.button("회원 관리"):
-            st.session_state.page = "member_manage"
             st.rerun()
 
     st.divider()
@@ -64,7 +57,7 @@ def render():
             conn.close()
 
         cookie_manager.delete("token")
-
+        
         st.session_state.is_admin = False
         st.session_state.page = "waiting"
 
