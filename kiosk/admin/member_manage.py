@@ -60,7 +60,7 @@ def render():
 
             st.dataframe(
                 df,
-                use_container_width=True,
+                width='stretch',
                 hide_index=True
             )
 
@@ -157,7 +157,7 @@ def render():
 
                     st.dataframe(
                         pay_df,
-                        use_container_width=True,
+                        width='stretch',
                         hide_index=True
                     )
 
