@@ -47,6 +47,7 @@ def render():
 
             conn, cursor = get_cursor()
 
+            # admin 로그 아웃 시 token = NULL 
             cursor.execute("""
                 UPDATE admin
                 SET login_token = NULL

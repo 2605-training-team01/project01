@@ -23,12 +23,13 @@ def render():
 
     digits = st.session_state.get("phone_digits", "")
 
-    if len(digits) > 7:
-        phone = f"{digits[:3]}{digits[3:7]}{digits[7:]}"
-    elif len(digits) > 3:
-        phone = f"{digits[:3]}{digits[3:]}"
-    else:
+    phone_number = digits
+    if len(digits) <= 3:
         phone = digits
+    elif len(digits) <= 7:
+        phone = f"{digits[:3]}-{digits[3:]}"
+    else:
+        phone = f"{digits[:3]}-{digits[3:7]}-{digits[7:]}"
 
     st.markdown(
         f"""
@@ -82,10 +83,9 @@ def render():
         SELECT member_id
         FROM member
         WHERE phone_number=%s
-        """,(phone,))
+        """,(phone_number,))
 
         member = cursor.fetchone()
-        # row = cursor.fetchone()
 
 
         # 이미 회원이면
@@ -95,7 +95,7 @@ def render():
 
             member_id = member["member_id"]
             st.session_state.member_id = member_id
-            # st.session_state.member_id = member["member_id"]
+
             # 스탬프 +1
             cursor.execute("""
             UPDATE member
@@ -128,15 +128,13 @@ def render():
 
             
             st.session_state.phone_digits = "010"
-            st.session_state.phone = phone
+            st.session_state.phone = phone_number
             st.session_state.page = "payment"
-            st.rerun()
 
         # 회원 아니면 신규 생성
         else:
             st.info(f"신규 📱 {phone} 번호로 적립되었습니다.")
             time.sleep(1)
-            # member_id = st.session_state.member_id
             
             cursor.execute("""
             INSERT INTO member(
@@ -145,108 +143,15 @@ def render():
                 grade
             )
             VALUES(%s,1,'BRONZE')
-            """,(phone,))
+            """,(phone_number,))
 
             member_id = cursor.lastrowid
             st.session_state.member_id = member_id
-
-
-        # 주문에 회원 연결
-        # cursor.execute("""
-        # UPDATE orders
-        # SET member_id=%s
-        # WHERE order_id=%s
-        # """,(
-        #     st.session_state.member_id,
-        #     st.session_state.order_id
-        # ))
-        # # 등급 재계산
-
-        # member_id = st.session_state.member_id
-
-        # cursor.execute("""
-        # SELECT grade
-        # FROM member
-        # WHERE member_id=%s
-        # """, (member_id,))
-        # old_grade = cursor.fetchone()["grade"]
-
-        # cursor.execute("""
-        # SELECT SUM(total_amount) AS total_purchase
-        # FROM orders
-        # WHERE member_id=%s
-        # """, (member_id,))
-     # ======================
-        # orders / payment 연결
-        # ======================
-        # cursor.execute("""
-        # UPDATE orders SET member_id=%s WHERE order_id=%s
-        # """, (member_id, st.session_state.order_id))
-
-        # cursor.execute("""
-        # UPDATE payment SET member_id=%s WHERE order_id=%s
-        # """, (member_id, st.session_state.order_id))
-
-        # # ======================
-        # # 등급 재계산 (여기서 1번만)
-        # # ======================
-        # cursor.execute("""
-        # SELECT COALESCE(SUM(total_amount),0)
-        # FROM orders
-        # WHERE member_id=%s
-        # """, (member_id,))
-
-
-        # result = cursor.fetchone()
-        # total_purchase = result["total_purchase"] or 0
-
-        # # new_grade = "BRONZE"
-        # # total_purchase = cursor.fetchone()[0]
-
-        # if total_purchase >= 300000:
-        #     new_grade = "GOLD"
-        # elif total_purchase >= 100000:
-        #     new_grade = "SILVER"
-        # else:
-        #     new_grade = "BRONZE"
-
-        # cursor.execute("""
-        # UPDATE member
-        # SET grade=%s
-        # WHERE member_id=%s
-        # """, (
-        #     new_grade,
-        #     member_id
-        # ))
-
-
-        # if old_grade != new_grade:
-        #     st.session_state.grade_upgrade_msg = (
-        #         f"🎉 등급이 {old_grade} → {new_grade}로 승급되었습니다!"
-        #     )
-         
-
-
-        # 결제에 회원 연결
-        # cursor.execute("""
-        # UPDATE payment
-        # SET member_id=%s
-        # WHERE order_id=%s
-        # """,(
-        #     st.session_state.member_id,
-        #     st.session_state.order_id
-        # ))
-        # cursor.execute("""
-        # UPDATE member
-        # SET grade=%s
-        # WHERE member_id=%s
-        # """, (new_grade, member_id))
 
         conn.commit()
         cursor.close()
         conn.close()
         st.session_state.phone_digits = "010"
-        st.session_state.phone = phone
-        # st.session_state.grade = new_grade
+        st.session_state.phone = phone_number
         st.session_state.page = "payment"
         st.rerun()
