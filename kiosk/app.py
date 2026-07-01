@@ -3,11 +3,11 @@ import streamlit as st
 from utils.session import init_session
 from utils.cookies import cookie_manager
 
-from in_charge.waiting2 import render  as waiting_page
-#from kiosk_pages.waiting import render as waiting_page
+from in_charge.waiting2 import render as waiting_page
+# from kiosk_pages.waiting import render as waiting_page
 from kiosk_pages.order_type import render as order_type_page
-# from kiosk_pages.menu import render as menu_page
-from in_charge.menu2 import render as menu_page
+from kiosk_pages.menu import render as menu_page
+# from in_charge.menu2 import render as menu_page
 from kiosk_pages.option import render as option_page
 from kiosk_pages.summary import render as summary_page
 from kiosk_pages.payment import render as payment_page
@@ -22,6 +22,7 @@ from admin.menu_manage import render as menu_manage_page
 from admin.sales import render as sales_page
 from admin.option_manage import render as option_manage_page
 from admin.change_password import render as change_password
+from admin.member_manage import render as member_manage_page   # 추가
 
 st.set_page_config(
     page_title="키오스크",
@@ -85,10 +86,11 @@ PAGE_MAP = {
     "complete": complete_page,
     "admin_login": admin_login_page,
     "admin_dashboard": admin_dashboard_page,
-    "change_password" : change_password,
+    "change_password": change_password,
     "menu_manage": menu_manage_page,
     "sales": sales_page,
     "option_manage": option_manage_page,
+    "member_manage": member_manage_page,   # 추가
 }
 
 # --------------------------

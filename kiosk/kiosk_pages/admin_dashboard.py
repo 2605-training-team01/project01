@@ -11,7 +11,7 @@ def render():
 
     st.title("관리자 페이지")
 
-    col1, col2 = st.columns([8,2])
+    col1, col2 = st.columns([8, 2])
 
     with col2:
         if st.button("🔑 비밀번호 변경"):
@@ -20,7 +20,8 @@ def render():
 
     st.subheader("관리 메뉴")
 
-    col1, col2, col3 = st.columns(3)
+    # 버튼 4개로 변경
+    col1, col2, col3, col4 = st.columns(4)
 
     with col1:
         if st.button("메뉴 관리"):
@@ -37,6 +38,11 @@ def render():
             st.session_state.page = "sales"
             st.rerun()
 
+    with col4:
+        if st.button("회원 관리"):
+            st.session_state.page = "member_manage"
+            st.rerun()
+
     st.divider()
 
     if st.button("로그아웃"):
@@ -47,7 +53,7 @@ def render():
 
             conn, cursor = get_cursor()
 
-            # admin 로그 아웃 시 token = NULL 
+            # admin 로그아웃 시 token 삭제
             cursor.execute("""
                 UPDATE admin
                 SET login_token = NULL
@@ -58,7 +64,7 @@ def render():
             conn.close()
 
         cookie_manager.delete("token")
-        
+
         st.session_state.is_admin = False
         st.session_state.page = "waiting"
 
