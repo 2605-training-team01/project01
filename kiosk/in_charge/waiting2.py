@@ -207,9 +207,9 @@ def render():
     <p class="glow-text" style="
         text-align:center;
         color:#FFE8A3;
-        font-size:35px;
-        margin-top:3px;
-        margin-bottom:50px;
+        font-size:40px;
+        margin-top:20px;
+        margin-bottom:25px;
         font-family:'PretendardVariable';
     ">
     원하시는 주문방식을 선택하세요
@@ -236,13 +236,13 @@ def render():
         col1, gap1, col2 = st.columns([1, 0.2, 1])
 
         with col1:
-            if st.button("[ FOR HERE ] 매장", use_container_width=True):
+            if st.button("FOR HERE [ 매장 ]", use_container_width=True):
                 st.session_state.order_type = "매장"
                 st.session_state.page = "menu"
                 st.rerun()
 
         with col2:
-            if st.button("[ TAKE OUT ] 포장", use_container_width=True):
+            if st.button("TAKE OUT [ 포장 ]", use_container_width=True):
                 st.session_state.order_type = "포장"
                 st.session_state.page = "menu"
                 st.rerun()
@@ -252,7 +252,7 @@ def render():
         unsafe_allow_html=True
     )
 
-    admin_space, admin = st.columns([9, 1])
+    admin_space, admin = st.columns([7, 0.7])
 
     with admin:
         if st.button("⚙️"):

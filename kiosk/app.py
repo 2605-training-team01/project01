@@ -28,6 +28,12 @@ st.set_page_config(
     layout="wide"
 )
 
+# st.set_page_config(
+#     page_title="키오스크",
+#     layout="centered"
+# )
+
+
 init_session()
 
 # --------------------------
