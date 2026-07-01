@@ -22,6 +22,7 @@ from admin.menu_manage import render as menu_manage_page
 from admin.sales import render as sales_page
 from admin.option_manage import render as option_manage_page
 from admin.change_password import render as change_password
+from admin.category_manage import render as category_manage_page
 from admin.member_manage import render as member_manage_page   # 추가
 
 st.set_page_config(
@@ -90,6 +91,7 @@ PAGE_MAP = {
     "menu_manage": menu_manage_page,
     "sales": sales_page,
     "option_manage": option_manage_page,
+    "category_manage": category_manage_page,
     "member_manage": member_manage_page,   # 추가
 }
 
