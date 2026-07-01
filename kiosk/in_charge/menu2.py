@@ -4,112 +4,93 @@ import base64
 from db.database import get_cursor
 
 def render():
-
-  
-    query_params = st.query_params
-    if query_params.get("action") == "go_to_summary":
-       
-        st.query_params.clear()
-        st.session_state.page = "summary"
-        st.rerun()
-
-
+   
     try:
         with open("fonts/PretendardVariable.ttf", "rb") as font_file:
             pretendard_base64 = base64.b64encode(font_file.read()).decode()
     except FileNotFoundError:
         pretendard_base64 = ""
 
+    if "cart" not in st.session_state:
+        st.session_state.cart = []
+
+    # 2. UI 스타일 주입 
     st.markdown(f"""
     <style>
     @font-face {{
         font-family: "Pretendard";
         src: url(data:font/ttf;base64,{pretendard_base64}) format("truetype");
     }}
-    </style>
-    """, unsafe_allow_html=True)
-
-    st.markdown("""
-    <style>
-   
-    html, body, [class*="st-"], div, p, h1, h2, h3, button, a {
-        font-family: "Pretendard", sans-serif !important;
-    }
     
-    h1 {
+    /* 전체 기본 서체 지정 (기본 글씨는 Regular 유지) */
+    html, body, [class*="st-"], div, p, h1, h2, h3, button, a {{
+        font-family: "Pretendard", sans-serif !important;
+    }}
+    
+    h1 {{
         font-weight: 800 !important;
         letter-spacing: -0.5px;
         margin: 0 !important;
         display: inline-block !important;
-    }
+    }}
 
-    h3 {
+    h3 {{
         margin: 16px 0 0 0 !important;
         color: #666666 !important;
         font-weight: 500 !important;
         font-size: 18px !important;
-    }
+    }}
                 
-    .stApp {
+    .stApp {{
         background:
             radial-gradient(circle at top left, #FFF8F0 0%, transparent 35%),               
             radial-gradient(circle at bottom right, #F5EFE7 0%, transparent 30%),
             linear-gradient(180deg, #FCFBF8 0%, #F8F4EE 50%, #FCFBF8 100%);
-    }
+    }}
 
-    .block-container {
+    .block-container {{
         max-width: 1200px !important; 
         margin: 0 auto !important;    
         padding-left: 2rem !important;
         padding-right: 2rem !important;
-    }
+    }}
                                 
-    div[data-testid="stButton"] > button {
+    /* 일반 카테고리 탭 버튼 스타일 */
+    div[data-testid="stButton"] > button {{
         background-color: white !important;
         color: #222 !important;
-        border: none;
-        border-bottom: 3px solid transparent;
-        border-radius: 0;
+        border: none !important;
+        border-bottom: 3px solid transparent !important;
+        border-radius: 0px !important;
         font-size: 24px;
-        font-weight: 700;
+        font-weight: 800 !important; /* [강조] 카테고리 폰트 두껍게 */
         height: 58px;
-    }
+    }}
 
-    div[data-testid="stButton"] > button p {
-             font-size: 18px !important;
-             font-weight: 600 !important;
-    }
+    div[data-testid="stButton"] > button p {{
+         font-size: 18px !important;
+         font-weight: 800 !important; /* [강조] 카테고리 내부 텍스트 폰트 두껍게 */
+    }}
                                                        
-    div[data-testid="stVerticalBlock"] {
+    div[data-testid="stVerticalBlock"] {{
         gap: 0px !important;
-    }                        
+    }}                        
                 
-    div[data-testid="stButton"] > button[kind="primary"] {
+    /* 선택된 카테고리 탭 버튼 스타일 */
+    div[data-testid="stButton"] > button[kind="primary"] {{
         background-color: #f2f2f2 !important;
         color: #222 !important;
         border-bottom: 3px solid #222 !important;
-    }
-                
-    div[data-testid="stButton"] > button[kind="primary"] {
-        background: #222 !important;
-        color: white !important;   
-        border-radius: 10px !important;
-        border: none !important;  
-        height: 48px !important;
-        font-size: 16px !important;
-        font-weight: 600 !important;
+        border-radius: 0px !important;
         box-shadow: none !important;
-    }        
-                                              
-    div[data-testid="stButton"] > button[kind="primary"]:hover {
-        background:#333 !important;  
-    }
+    }}
                 
-    div[data-testid="stButton"] > button:hover {
-        border-bottom: 3px solid #222;
-    }
+    div[data-testid="stButton"] > button:hover {{
+        border-bottom: 3px solid #222 !important;
+    }}
 
-    [class*="st-key-category_box"] {
+    /* 카테고리 박스 컨테이너 */
+    [class*="st-key-category_box"] {{
         background: #ffffff !important;
         border-radius: 18px !important;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.10) !important;
@@ -118,9 +99,10 @@ def render():
         margin-bottom: 50px !important; 
         border: none !important; 
         overflow: hidden !important;        
-    }
+    }}
                 
-    [class*="st-key-card_"] {
+    /* 메뉴 카드 컴포넌트 디자인 */
+    [class*="st-key-card_"] {{
         background: #ffffff !important;
         border: none !important; 
         border-radius: 18px !important;
@@ -129,18 +111,19 @@ def render():
         transition: transform 0.2s ease, box-shadow 0.2s ease;
         margin-bottom: 50px !important; 
         overflow: hidden !important; 
-    }            
+    }}            
 
-    [class*="st-key-card_"]:hover {
+    [class*="st-key-card_"]:hover {{
         transform: translateY(-6px);  
         box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15) !important;
-    }
+    }}
 
-    div[data-testid="stColumnsHorizontal"] {
+    div[data-testid="stColumnsHorizontal"] {{
         gap: 50px !important; 
-    }
+    }}
 
-    .order-badge-style {
+    /* 상단 배지 스타일 */
+    .order-badge-style {{
         display: inline-block !important;
         white-space: nowrap !important;
         background-color: #5E5049 !important; 
@@ -151,44 +134,16 @@ def render():
         font-weight: 800 !important;
         letter-spacing: -0.5px !important;
         box-shadow: 0 8px 24px rgba(94, 80, 73, 0.25), 0 2px 6px rgba(94, 80, 73, 0.15) !important;
-    }
-
-   
-    .absolute-html-btn {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        background-color: #5E5049 !important;
-        color: #ffffff !important;
-        border-radius: 14px !important;
-        text-decoration: none !important;
-        font-size: 22px !important;
-        font-weight: 700 !important;
-        height: 58px !important;
-        width: 100% !important;
-        box-shadow: 0 6px 18px rgba(94, 80, 73, 0.22) !important;
-        transition: background-color 0.2s ease, transform 0.1s ease !important;
-    }
-    
-    .absolute-html-btn:hover {
-        background-color: #4a3e38 !important;
-        color: #ffffff !important;
-    }
-
-    .absolute-html-btn:active {
-        transform: scale(0.98) !important;
-    }
-     
+    }}
     </style>
     """, unsafe_allow_html=True)                
 
+    # 3. 데이터베이스 데이터 조회
     conn, cursor = get_cursor()    
 
-    # 카테고리 조회
     cursor.execute("SELECT category_name FROM category ORDER BY category_code")
     categories = [row["category_name"] for row in cursor.fetchall()]
 
-    # 메뉴 조회
     cursor.execute("""
     SELECT c.category_name, m.menu_id, m.menu_name, m.menu_price, m.menu_image
     FROM menu m
@@ -206,6 +161,7 @@ def render():
 
     order_type = st.session_state.get("order_type", "매장")
 
+    # 상단 주문 방식 안내 구역
     st.markdown(f"""
     <div style="margin-top: 35px; margin-bottom: 30px;">
         <span class="order-badge-style">{order_type} 주문</span>
@@ -213,7 +169,7 @@ def render():
     </div>
     """, unsafe_allow_html=True)
     
-    # 카테고리 버튼 UI
+    # 4. 카테고리 탭 UI 구현
     if "selected_category" not in st.session_state:
         st.session_state.selected_category = categories[0] if categories else None
 
@@ -229,7 +185,7 @@ def render():
     selected_category = st.session_state.selected_category
     filtered_menu = menu_dict.get(selected_category, [])
 
-
+    # 5. 메뉴 리스트 UI 구현
     menu_cols = st.columns(2)
     for idx, menu in enumerate(filtered_menu):
         with menu_cols[idx % 2]:
@@ -238,39 +194,37 @@ def render():
                 if image_path:
                     st.image(image_path, use_container_width=True)     
 
+             
                 st.markdown(f"""
                     <div style="text-align: center; margin-top: 20px; margin-bottom: 16px;">
                         <p style="margin: 0 0 8px 0; font-size: 26px; font-weight: 700; color: #222222;">{menu['menu_name']}</p>
-                        <p style="margin: 0; font-size: 22px; font-weight: 500; color: #666666;">{menu['menu_price']:,}원</p>
+                        <p style="margin: 0; font-size: 22px; font-weight: 800; color: #222222;">{menu['menu_price']:,}원</p>
                     </div>
                 """, unsafe_allow_html=True)
 
-                if st.button("🛒 주문하기", key=f"menu_{menu['menu_id']}", use_container_width=True, type="primary"):
+               
+                if st.button("🛒 **주문하기**", key=f"menu_{menu['menu_id']}", use_container_width=True, type="primary"):
                     st.session_state.selected_menu = dict(menu)
                     st.session_state.page = "option"
                     conn.close()
                     st.rerun()
              
-# -----------------------------
-
-# -----------------------------
+    # 6. 하단 장바구니 바 구역
     st.markdown("<br><br>", unsafe_allow_html=True)
-    cart_count = len(st.session_state.cart)
     st.divider()
 
+    cart_count = len(st.session_state.get("cart", []))
     col1, col2 = st.columns([2, 1])
 
     with col1:
-        st.markdown(f"### 🛒 장바구니 {cart_count}개")
+       
+        st.markdown(f"### 🛒 **장바구니 {cart_count}개**")
         
     with col2:
-  
-        st.markdown("""
-            <div style="margin-top: 12px;">
-                <a href="?action=go_to_summary" target="_self" class="absolute-html-btn">
-                    장바구니 보기
-                </a>
-            </div>
-        """, unsafe_allow_html=True)
+     
+        if st.button("**장바구니 보기**", key="go_to_summary_btn", use_container_width=True, type="primary"):
+            st.session_state.page = "summary"
+            conn.close()
+            st.rerun()
             
     conn.close()
