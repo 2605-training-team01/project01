@@ -85,14 +85,30 @@ def render():
         width="stretch",
         disabled=["menu_id"],
         column_config={
-            "menu_id": "번호",
-            "category_name": "카테고리",
-            "menu_name": "메뉴명",
+            "menu_id": st.column_config.NumberColumn(
+                "번호",
+                disabled=True
+            ),
+
+            "category_name": st.column_config.SelectboxColumn(
+                "카테고리",
+                options=list(category_map.keys()),
+                required=True
+            ),
+
+            "menu_name": st.column_config.TextColumn(
+                "메뉴명"
+            ),
+
             "menu_price": st.column_config.NumberColumn(
                 "가격",
-                format="%d원"
+                format="%d원",
+                min_value=0
             ),
-            "menu_image": "이미지"
+
+            "menu_image": st.column_config.TextColumn(
+                "이미지"
+            )
         }
     )
 
