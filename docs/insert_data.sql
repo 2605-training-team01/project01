@@ -24,7 +24,7 @@ SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `admin` WRITE;
 /*!40000 ALTER TABLE `admin` DISABLE KEYS */;
 INSERT INTO `admin` VALUES
-(1,'admin','1234','d74206fbddb640969e4eb9256817a7e2'),
+(1,'admin','1234',NULL),
 (2,'admin2','test','bfb2a92285b44bea8bf6cbfab71a13db');
 /*!40000 ALTER TABLE `admin` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -92,32 +92,32 @@ SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `menu` WRITE;
 /*!40000 ALTER TABLE `menu` DISABLE KEYS */;
 INSERT INTO `menu` VALUES
-(1,10,'아메리카노',1500,'images/ame.png','Y'),
-(2,10,'카페라떼',1500,'images/late.png','Y'),
-(3,20,'복숭아아이스티',2000,'images/peach.png','Y'),
-(4,20,'레몬아이스티',2000,'images/lemon.png','Y'),
-(5,30,'쿠키',3000,'images/cookie.png','Y'),
-(6,30,'케이이크',3000,'images/cake.png','Y'),
-(7,40,'키링',3000,'images/key.png','Y'),
-(8,40,'텀블러',10000,'images/tum.png','Y'),
-(9,10,'콜드브루',4000,'images/cold.png','Y'),
-(10,20,'허브티',3000,'images/herb.png','Y'),
-(11,20,'클래식밀크티',2500,'images/milk.png','Y'),
-(12,40,'멍뭉이',0,'images/dog.jpg','Y'),
-(13,10,'에스프레소',3000,'images/esp.png','Y'),
-(14,10,'멍멍이들',0,'images/puppies.jpg','Y'),
-(15,10,'도치',0,'images/dochi.png','Y'),
-(16,10,'토끼!',0,'images/rabbit.png','Y'),
-(17,10,'새로이',30000,'','Y'),
-(18,41,'논커피테스트',3000,'','Y'),
-(19,42,'월드콘',2000,'','Y'),
-(20,43,'캥거루',0,'','Y'),
-(21,44,'상추',1000,'','Y'),
-(22,44,'양배추',1500,'','Y'),
-(23,45,'천문학',1500,'','Y'),
-(24,45,'물리학',1500,'','Y'),
-(25,46,'헤일메리',1000,'','Y'),
-(26,47,'테스트',0,'','Y');
+(1,10,'아메리카노',1500,'images/ame.png','Y',1),
+(2,10,'카페라떼',1500,'images/late.png','Y',1),
+(3,20,'복숭아아이스티',2000,'images/peach.png','Y',1),
+(4,20,'레몬아이스티',2000,'images/lemon.png','Y',1),
+(5,30,'쿠키',3000,'images/cookie.png','Y',1),
+(6,30,'케이이크',3000,'images/cake.png','Y',1),
+(7,40,'키링',3000,'images/key.png','Y',1),
+(8,40,'텀블러',10000,'images/tum.png','Y',1),
+(9,10,'콜드브루',4000,'images/cold.png','Y',1),
+(10,20,'허브티',3000,'images/herb.png','Y',1),
+(11,20,'클래식밀크티',2500,'images/milk.png','Y',1),
+(12,40,'멍뭉이',0,'images/dog.jpg','Y',1),
+(13,10,'에스프레소',3000,'images/esp.png','Y',1),
+(14,10,'멍멍이들',0,'images/puppies.jpg','Y',1),
+(15,10,'도치',0,'images/dochi.png','Y',1),
+(16,10,'토끼!',0,'images/rabbit.png','Y',1),
+(17,10,'새로이',30000,'','Y',1),
+(18,41,'논커피테스트',3000,'','Y',1),
+(19,42,'월드콘',2000,'','Y',1),
+(20,43,'캥거루',0,'','Y',1),
+(21,44,'상추',1000,'','Y',1),
+(22,44,'양배추',1500,'','Y',1),
+(23,45,'천문학',1500,'','Y',1),
+(24,45,'물리학',1500,'','Y',1),
+(25,46,'헤일메리',1000,'','Y',1),
+(26,47,'테스트',0,'','Y',1);
 /*!40000 ALTER TABLE `menu` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -590,4 +590,4 @@ SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-07-02 11:32:30
+-- Dump completed on 2026-07-02 12:31:59

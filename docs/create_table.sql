@@ -78,6 +78,7 @@ CREATE TABLE `menu` (
   `menu_price` int(11) NOT NULL,
   `menu_image` varchar(500) DEFAULT NULL,
   `sale_yn` char(1) NOT NULL DEFAULT 'Y',
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`menu_id`),
   KEY `MENU_CATEGORY_FK` (`category_code`),
   CONSTRAINT `MENU_CATEGORY_FK` FOREIGN KEY (`category_code`) REFERENCES `category` (`category_code`)
@@ -223,4 +224,4 @@ CREATE TABLE `payment` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-07-02 11:32:15
+-- Dump completed on 2026-07-02 12:31:52
