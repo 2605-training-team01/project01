@@ -145,7 +145,18 @@ def render():
     categories = [row["category_name"] for row in cursor.fetchall()]
 
     cursor.execute("""
+<<<<<<< HEAD
     SELECT c.category_name, m.menu_id, m.menu_name, m.menu_price, m.menu_image
+=======
+    SELECT
+        c.category_name,
+        m.menu_id,
+        m.menu_name,
+        m.menu_price,
+        m.menu_image,
+        m.sale_yn
+                   
+>>>>>>> ae8becdeb237b16373cbc174c0186eee76385925
     FROM menu m
     JOIN category c ON m.category_code = c.category_code
     ORDER BY c.category_code, m.menu_id

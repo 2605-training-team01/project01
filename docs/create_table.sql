@@ -76,6 +76,7 @@ CREATE TABLE `menu` (
   `menu_name` varchar(50) NOT NULL,
   `menu_price` int(11) NOT NULL,
   `menu_image` varchar(500) DEFAULT NULL,
+  `sale_yn` CHAR(1) NOT NULL DEFAULT 'Y',
   PRIMARY KEY (`menu_id`),
   KEY `MENU_CATEGORY_FK` (`category_code`),
   CONSTRAINT `MENU_CATEGORY_FK` FOREIGN KEY (`category_code`) REFERENCES `category` (`category_code`)

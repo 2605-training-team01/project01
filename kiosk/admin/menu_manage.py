@@ -63,7 +63,8 @@ def render():
             c.category_name,
             m.menu_name,
             m.menu_price,
-            m.menu_image
+            m.menu_image,
+            m.sale_yn
         FROM menu m
         JOIN category c
             ON m.category_code = c.category_code
@@ -108,6 +109,12 @@ def render():
 
             "menu_image": st.column_config.TextColumn(
                 "이미지"
+            ),
+            
+            "sale_yn": st.column_config.SelectboxColumn(
+                "판매여부",
+                options=["Y", "N"],
+                required=True
             )
         }
     )
@@ -155,13 +162,15 @@ def render():
                                 category_code=%s,
                                 menu_name=%s,
                                 menu_price=%s,
-                                menu_image=%s
+                                menu_image=%s,
+                                sale_yn=%s
                             WHERE menu_id=%s
                         """, (
                             category_code,
                             row["menu_name"],
                             int(row["menu_price"]),
                             row["menu_image"],
+                            row["sale_yn"],
                             row["menu_id"]
                         ))
 
@@ -207,6 +216,13 @@ def render():
     selected_category = st.selectbox(
         "카테고리",
         list(category_map.keys())
+    )
+
+
+    sale_yn = st.selectbox(
+        "판매여부",
+        ["Y", "N"],
+        index=0
     )
 
     uploaded_file = st.file_uploader(
@@ -288,14 +304,16 @@ def render():
                             category_code,
                             menu_name,
                             menu_price,
-                            menu_image
+                            menu_image,
+                            sale_yn
                         )
-                        VALUES (%s, %s, %s, %s)
+                        VALUES (%s, %s, %s, %s, %s)
                     """, (
                         category_map[selected_category],
                         menu_name,
                         menu_price,
-                        image_path
+                        image_path,
+                        sale_yn
                     ))
 
                     new_menu_id = cursor.lastrowid
