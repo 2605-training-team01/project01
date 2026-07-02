@@ -12,63 +12,92 @@
    - DQL 실행하여 모델링 검증
 7. Python와 연동
 --------
+> 프로젝트 흐름
+```
+app.py
+   │
+   ▼
+order_type
+   │
+   ▼
+menu
+   │
+   ▼
+option
+   │
+   ▼
+summary
+   │
+   ▼
+membership
+   │
+   ▼
+phone
+   │
+   ▼
+payment
+   │
+   ▼
+waiting
+   │
+   ▼
+complete
+   │
+   ▼
+receipt
+```
+--------
 > 프로젝트 구조
 ```
 kiosk/
 │
-├── app.py                  # 메인 실행 파일
-├── requirements.txt
+├── app.py                     # 프로그램 시작점
+├── .env                       # 환경변수
+├── requirements.txt           # 설치 라이브러리
 ├── 실행방법.md
 │
-├── admin/                  # 관리자 기능
-│   ├── __init__.py
-│   ├── change_password.py  # 비밀번호 변경
-│   ├── menu_manage.py      # 메뉴 관리
-│   ├── option_manage.py    # 옵션 관리
-│   └── sales.py            # 매출 조회
-│
 ├── db/
-│   └── database.py         # DB 연결 및 커서 생성
+│   └── database.py            # MySQL 연결
 │
-├── kiosk_pages/            # 사용자 화면
-│   ├── admin_dashboard.py  # 관리자 대시보드
-│   ├── admin_login.py      # 관리자 로그인
-│   ├── complete.py         # 주문 완료
-│   ├── membership.py       # 회원 적립
-│   ├── menu.py             # 메뉴 선택
-│   ├── option.py           # 옵션 선택
-│   ├── order_type.py       # 매장/포장 선택
-│   ├── payment.py          # 결제
-│   ├── phone.py            # 전화번호 입력
-│   ├── receipt.py          # 영수증
-│   ├── summary.py          # 장바구니/주문 요약
-│   └── waiting.py          # 대기 화면
+├── utils/
+│   ├── cookies.py             # 쿠키 관리
+│   └── session.py             # SessionState 관리
 │
-├── utils/                  # 공통 기능
-│   ├── cookies.py
-│   └── session.py
+├── kiosk_pages/               # 사용자(키오스크) 화면
+│   ├── order_type.py          # 포장/매장 선택
+│   ├── menu.py                # 메뉴 선택
+│   ├── option.py              # 옵션 선택
+│   ├── summary.py             # 주문 내역
+│   ├── membership.py          # 적립 여부
+│   ├── phone.py               # 전화번호 입력
+│   ├── payment.py             # 결제
+│   ├── waiting.py             # 제조 대기
+│   ├── complete.py            # 주문 완료
+│   ├── receipt.py             # 영수증
+│   ├── admin_login.py         # 관리자 로그인
+│   └── admin_dashboard.py     # 관리자 메인
 │
-├── db/
-│   └── database.py
+├── admin/                     # 관리자 기능
+│   ├── category_manage.py     # 카테고리 관리
+│   ├── menu_manage.py         # 메뉴 관리
+│   ├── option_manage.py       # 옵션 관리
+│   ├── member_manage.py       # 회원 관리
+│   ├── sales.py               # 매출 통계
+│   └── change_password.py     # 관리자 비밀번호 변경
 │
-├── images/                 # 메뉴 및 배경 이미지
+├── images/                    # 메뉴 및 UI 이미지
 │   ├── americano.png
-│   ├── coldbrew.png
 │   ├── latte.png
-│   ├── rabbit.png
-│   ├── no-image.png
-│   └── ...
+│   ├── cake.png
+│   ├── ...
 │
 ├── fonts/
 │   ├── GmarketSansTTFBold.ttf
 │   └── PretendardVariable.ttf
 │
-└── in_charge/
-    ├── waiting2.py
-    ├── store.png
-    ├── takeout.png
-    ├── drink.jpg
-    └── drink2.jpg
+└── in_charge/                 # 테스트/시안 파일
+    ├── menu2.py
+    └── image/
 ```
 ---
 ## 멤버 역할
