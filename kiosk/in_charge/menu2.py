@@ -178,7 +178,7 @@ def render():
         for idx, category_name in enumerate(categories):
             is_selected = (category_name == st.session_state.selected_category)
             with tab_cols[idx]:
-                if st.button(category_name, key=f"tab_{idx}", use_container_width=True, type="primary" if is_selected else "secondary"): 
+                if st.button(category_name, key=f"tab_{idx}", width='stretch', type="primary" if is_selected else "secondary"): 
                     st.session_state.selected_category = category_name
                     st.rerun()       
                 
@@ -194,7 +194,7 @@ def render():
                 if not image_path:
                     image_path = "images/default.png"
 
-                st.image(image_path, use_container_width=True)     
+                st.image(image_path, width='stretch')     
 
              
                 st.markdown(f"""
@@ -205,7 +205,7 @@ def render():
                 """, unsafe_allow_html=True)
 
                
-                if st.button("🛒 **주문하기**", key=f"menu_{menu['menu_id']}", use_container_width=True, type="primary"):
+                if st.button("🛒 **주문하기**", key=f"menu_{menu['menu_id']}", width='stretch', type="primary"):
                     st.session_state.selected_menu = dict(menu)
                     st.session_state.page = "option"
                     conn.close()
@@ -224,7 +224,7 @@ def render():
         
     with col2:
      
-        if st.button("**장바구니 보기**", key="go_to_summary_btn", use_container_width=True, type="primary"):
+        if st.button("**장바구니 보기**", key="go_to_summary_btn", width='stretch', type="primary"):
             st.session_state.page = "summary"
             conn.close()
             st.rerun()
