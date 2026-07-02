@@ -220,10 +220,6 @@ def render():
                 </div>
                 """, unsafe_allow_html=True)
 
-<<<<<<< HEAD
-               
-                if st.button("🛒 **주문하기**", key=f"menu_{menu['menu_id']}", width='stretch', type="primary"):
-=======
                 # if menu["sale_yn"] == "N":
                 #     st.markdown("""
                 #     <p style="
@@ -255,7 +251,6 @@ def render():
                     type="primary",
                     disabled=sold_out
                 ):
->>>>>>> ae8becdeb237b16373cbc174c0186eee76385925
                     st.session_state.selected_menu = dict(menu)
                     st.session_state.page = "option"
                     conn.close()

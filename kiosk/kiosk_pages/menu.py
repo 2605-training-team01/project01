@@ -145,9 +145,6 @@ def render():
     categories = [row["category_name"] for row in cursor.fetchall()]
 
     cursor.execute("""
-<<<<<<< HEAD
-    SELECT c.category_name, m.menu_id, m.menu_name, m.menu_price, m.menu_image
-=======
     SELECT
         c.category_name,
         m.menu_id,
@@ -155,11 +152,12 @@ def render():
         m.menu_price,
         m.menu_image,
         m.sale_yn
-                   
->>>>>>> ae8becdeb237b16373cbc174c0186eee76385925
     FROM menu m
-    JOIN category c ON m.category_code = c.category_code
-    ORDER BY c.category_code, m.menu_id
+    JOIN category c
+        ON m.category_code = c.category_code
+    ORDER BY
+        c.category_code,
+        m.menu_id
     """)
     menu_rows = cursor.fetchall()
     
@@ -208,15 +206,51 @@ def render():
                 st.image(image_path, width='stretch')     
 
              
+                # st.markdown(f"""
+                #     <div style="text-align: center; margin-top: 20px; margin-bottom: 16px;">
+                #         <p style="margin: 0 0 8px 0; font-size: 26px; font-weight: 700; color: #222222;">{menu['menu_name']}</p>
+                #         <p style="margin: 0; font-size: 22px; font-weight: 800; color: #222222;">{menu['menu_price']:,}원</p>
+                #     </div>
+                # """, unsafe_allow_html=True)
                 st.markdown(f"""
-                    <div style="text-align: center; margin-top: 20px; margin-bottom: 16px;">
-                        <p style="margin: 0 0 8px 0; font-size: 26px; font-weight: 700; color: #222222;">{menu['menu_name']}</p>
-                        <p style="margin: 0; font-size: 22px; font-weight: 800; color: #222222;">{menu['menu_price']:,}원</p>
-                    </div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <p style="margin:0 0 8px 0; font-size:26px; font-weight:700;">
+                        {menu['menu_name']}
+                    </p>
+                </div>
                 """, unsafe_allow_html=True)
 
-               
-                if st.button("🛒 **주문하기**", key=f"menu_{menu['menu_id']}", width='stretch', type="primary"):
+                # if menu["sale_yn"] == "N":
+                #     st.markdown("""
+                #     <p style="
+                #         color:red;
+                #         font-size:20px;
+                #         font-weight:bold;
+                #         text-align:center;
+                #         margin:5px 0;
+                #     ">
+                #         🚫 품절
+                #     </p>
+                #     """, unsafe_allow_html=True)
+
+                st.markdown(f"""
+                <p style="
+                    text-align:center;
+                    font-size:22px;
+                    font-weight:800;
+                ">
+                    {menu['menu_price']:,}원
+                </p>
+                """, unsafe_allow_html=True)
+
+                sold_out = menu["sale_yn"] == "N"
+                if st.button(
+                    "🚫 품절" if sold_out else "🛒 주문하기",
+                    key=f"menu_{menu['menu_id']}",
+                    use_container_width=True,
+                    type="primary",
+                    disabled=sold_out
+                ):
                     st.session_state.selected_menu = dict(menu)
                     st.session_state.page = "option"
                     conn.close()
