@@ -191,8 +191,10 @@ def render():
         with menu_cols[idx % 2]:
             with st.container(border=True, key=f"card_{menu['menu_id']}"):
                 image_path = menu.get("menu_image")
-                if image_path:
-                    st.image(image_path, use_container_width=True)     
+                if not image_path:
+                    image_path = "images/default.png"
+
+                st.image(image_path, use_container_width=True)     
 
              
                 st.markdown(f"""
