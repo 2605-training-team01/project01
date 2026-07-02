@@ -4,6 +4,7 @@ from db.database import get_cursor
 
 def render():
 
+
     conn, cursor = get_cursor()
 
     # 카테고리 조회
@@ -25,7 +26,9 @@ def render():
         m.menu_id,
         m.menu_name,
         m.menu_price,
-        m.menu_image
+        m.menu_image,
+        m.sale_yn
+                   
     FROM menu m
     JOIN category c
         ON m.category_code = c.category_code
@@ -184,6 +187,9 @@ def render():
                         width='stretch'
                     )
                 st.markdown('</div>', unsafe_allow_html=True)
+
+                # 품절 여부
+                sold_out = menu["sale_yn"] == "N"
                 
                 st.markdown(
                     f"""
@@ -200,28 +206,59 @@ def render():
                     unsafe_allow_html=True
                 )
 
+
+
+# soldout 여부추가
+                if sold_out:
+                    st.markdown(
+                        """
+                        <p style="
+                            color:red;
+                            text-align:center;
+                            font-size:18px;
+                            font-weight:bold;
+                            margin:5px 0;
+                        ">
+                            🚫 품절
+                        </p>
+                        """,
+                        unsafe_allow_html=True
+                    )
+
+
+
+
                 st.markdown(
                     f"<p style='text-align:center;font-size:15px;'>{menu['menu_price']:,}원</p>",
                     unsafe_allow_html=True
                 )
 
+# soldout여부추가
+                sold_out = menu["sale_yn"] == "N"
                 if st.button(
-                    "주문하기",
+                    "🚫 품절" if sold_out else "주문하기",
                     key=f"menu_{menu['menu_id']}",
-                    width='stretch'
+                    width='stretch',
+                    disabled=sold_out
                 ):
+                    if not sold_out:
+                        st.session_state.selected_menu = dict(menu)
+                        st.session_state.page = "option"
 
-                    st.session_state.selected_menu = (
-                        dict(menu)
-                    )
+                        conn.close()
+                        st.rerun()
 
-                    st.session_state.page = (
-                        "option"
-                    )
+                    # st.session_state.selected_menu = (
+                    #     dict(menu)
+                    # )
 
-                    conn.close()
+                    # st.session_state.page = (
+                    #     "option"
+                    # )
 
-                    st.rerun()
+                    # conn.close()
+
+                    # st.rerun()
 
 # -----------------------------
 # 하단 장바구니 영역
