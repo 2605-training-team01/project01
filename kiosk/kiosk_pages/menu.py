@@ -151,10 +151,12 @@ def render():
         m.menu_name,
         m.menu_price,
         m.menu_image,
-        m.sale_yn
+        m.sale_yn,
+        m.is_active
     FROM menu m
     JOIN category c
         ON m.category_code = c.category_code
+    WHERE m.is_active = 1
     ORDER BY
         c.category_code,
         m.menu_id

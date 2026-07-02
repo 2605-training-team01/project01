@@ -64,7 +64,8 @@ def render():
             m.menu_name,
             m.menu_price,
             m.menu_image,
-            m.sale_yn
+            m.sale_yn,
+            m.is_active
         FROM menu m
         JOIN category c
             ON m.category_code = c.category_code
@@ -115,6 +116,9 @@ def render():
                 "판매여부",
                 options=["Y", "N"],
                 required=True
+            ),
+            "is_active": st.column_config.CheckboxColumn(
+                "키오스크 표시"
             )
         }
     )
@@ -163,7 +167,8 @@ def render():
                                 menu_name=%s,
                                 menu_price=%s,
                                 menu_image=%s,
-                                sale_yn=%s
+                                sale_yn=%s,
+                                is_active=%s
                             WHERE menu_id=%s
                         """, (
                             category_code,
@@ -171,6 +176,7 @@ def render():
                             int(row["menu_price"]),
                             row["menu_image"],
                             row["sale_yn"],
+                            1 if row["is_active"] else 0,
                             row["menu_id"]
                         ))
 
@@ -305,15 +311,17 @@ def render():
                             menu_name,
                             menu_price,
                             menu_image,
-                            sale_yn
+                            sale_yn,
+                            is_active
                         )
-                        VALUES (%s, %s, %s, %s, %s)
+                        VALUES (%s, %s, %s, %s, %s, %s)
                     """, (
                         category_map[selected_category],
                         menu_name,
                         menu_price,
                         image_path,
-                        sale_yn
+                        sale_yn,
+                        1
                     ))
 
                     new_menu_id = cursor.lastrowid
@@ -503,7 +511,7 @@ def render():
     # ------------------------
     # 메뉴 삭제
     # ------------------------
-    st.subheader("메뉴 삭제")
+    st.subheader("메뉴 숨기기")
 
     if menus:
 
@@ -514,11 +522,11 @@ def render():
         }
 
         selected_menu = st.selectbox(
-            "삭제할 메뉴",
+            "숨길 메뉴",
             list(menu_map.keys())
         )
 
-        if st.button("메뉴 삭제"):
+        if st.button("메뉴 숨기기"):
 
             st.session_state.confirm_add = False
             st.session_state.confirm_update = False
@@ -529,7 +537,7 @@ def render():
         if st.session_state.confirm_delete:
 
             st.error(
-                f"{selected_menu} 메뉴를 삭제하시겠습니까?"
+                f"{selected_menu} 메뉴를 키오스크에서 숨기시겠습니까?"
             )
 
             col1, col2 = st.columns(2)
@@ -537,7 +545,7 @@ def render():
             with col1:
 
                 if st.button(
-                    "예, 삭제합니다",
+                    "예, 숨깁니다",
                     key="delete_yes"
                 ):
 
@@ -549,26 +557,19 @@ def render():
 
                         # 메뉴 옵션 연결 삭제
                         cursor.execute("""
-                            DELETE FROM menu_option_group
+                            UPDATE menu
+                            SET is_active=0
                             WHERE menu_id=%s
-                        """, (
+                            """,(
                             menu_id,
-                        ))
-
-                        # 메뉴 삭제
-                        cursor.execute("""
-                            DELETE FROM menu
-                            WHERE menu_id=%s
-                        """, (
-                            menu_id,
-                        ))
-
+                            ))
+                        
                         conn.commit()
 
                         st.session_state.confirm_delete = False
 
                         st.success(
-                            "메뉴가 삭제되었습니다."
+                            "메뉴가 키오스크에서 숨겨졌습니다."
                         )
 
                         st.rerun()
@@ -591,16 +592,14 @@ def render():
     else:
 
         st.info(
-            "삭제할 메뉴가 없습니다."
+            "숨길 메뉴가 없습니다."
         )
 
     st.divider()
 
     if st.button("뒤로가기"):
 
-        st.session_state.page = (
-            "admin_dashboard"
-        )
+        st.session_state.page = "admin_dashboard"
 
         st.rerun()
 
